@@ -51,11 +51,34 @@ async function generatePost(p) {
     const hash = crypto.createHash(algorithm);
     const id = hash.update(markdown, 'utf-8').digest('hex')
 
-    const remark = unified()
+    const [title, markdownWithoutTitle] = splitTitle(markdown)
+
+    const toc = generateToc(markdownWithoutTitle)
+
+    return {
+        id,
+        title,
+        date: Date.now(),
+        updated: mtime.getTime(),
+        // content,
+        author: pkg.author.name,
+        tags: [],
+        category: [],
+        related: [],
+        toc: []
+    }
+}
+
+/**
+ * 
+ * @param {string} markdown 
+ */
+function splitTitle(markdown) {
+    const processor = unified()
         .use(remarkParse)
         .use(remarkStringify)
 
-    const ast = remark.parse(markdown)
+    const ast = processor.parse(markdown)
 
     // title extract from first h1, otherwise use the filename
     let title = '';
@@ -66,14 +89,20 @@ async function generatePost(p) {
             title = h1?.children?.[0].value
             // remove h1 node in first line
             const idx = ast.children.findIndex(node => Object.is(node, h1))
-            if (idx === 0) ast.children.splice(idx, 1)
+            if (idx !== -1) ast.children.splice(idx, 1)
         }
     }
     if (!title) title = path.basename(p).split('.md')[0]
+    const content = processor.stringify(ast)
+    return [title, content]
+}
 
-    const content = remark.stringify(ast)
-
-    const rehype = unified()
+/**
+ * 
+ * @param {string} markdown 
+ */
+async function generateToc(markdown) {
+    const processor = unified()
         .use(remarkParse)
         .use(remarkSlug)
         .use(remarkToc)
@@ -82,20 +111,8 @@ async function generatePost(p) {
         .use(rehypeDocument)
         .use(rehypeStringify)
 
-    const result = await rehype.process(markdown)
-    console.log((result.value));
+    const ast = processor.parse('## Content\n' + markdown)
+    const result = await processor.process('## Content\n' + markdown)
+    console.log(Object.keys(result), result.data);
     fs.writeFileSync('a.html', result.value)
-
-    return {
-        id,
-        title,
-        date: Date.now(),
-        updated: mtime.getTime(),
-        content,
-        author: pkg.author.name,
-        tags: [],
-        category: [],
-        related: [],
-        toc: []
-    }
 }

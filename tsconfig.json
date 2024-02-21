@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "checkJs": true,
+    "customConditions": ["development"],
+    "declaration": true,
+    "declarationMap": true,
+    "emitDeclarationOnly": true,
+    "exactOptionalPropertyTypes": true,
+    "resolveJsonModule": true,
+    "lib": ["es2022"],
+    "module": "node16",
+    "strict": true,
+    "target": "es2022"
+  },
+  "exclude": ["coverage/", "node_modules/"],
+  "include": ["**/*.js", "test/types.d.ts", "index.d.ts"]
+}

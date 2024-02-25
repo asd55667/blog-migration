@@ -12,6 +12,20 @@
  * @property {Item[]=} items - an optional property of Item
  */
 
+/**
+ * @typedef {Object} IPost - creates a new type named 'IPost'
+ * @property {string} id - a string property of IPost
+ * @property {string} title - a string property of IPost
+ * @property {number} date - a number property of IPost
+ * @property {number} updated - a number property of IPost
+ * @property {string} content - a string property of IPost
+ * @property {string} author - a string property of IPost
+ * @property {string[]} tags - a string array property of IPost
+ * @property {string[]} category - a string array property of IPost
+ * @property {string[]} related - a string array property of IPost
+ * @property {Item} toc - a Item property of IPost
+ */
+
 import fs from 'node:fs'
 import path from 'node:path'
 import crypto from 'node:crypto'
@@ -19,14 +33,14 @@ import { createRequire } from 'node:module';
 
 import { unified } from 'unified'
 import remarkParse from 'remark-parse'
-import remarkToc from 'remark-toc'
-import remarkGfm from 'remark-gfm'
 import remarkStringify from 'remark-stringify'
 import remarkSlug from 'remark-slug'
 import { toc } from 'mdast-util-toc'
-import rehypeDocument from 'rehype-document'
 import rehypeStringify from 'rehype-stringify'
 import remarkRehype from 'remark-rehype'
+import remarkGfm from 'remark-gfm'
+import rehypeDocument from 'rehype-document'
+import { type } from 'node:os';
 
 
 const require = createRequire(import.meta.url);
@@ -42,14 +56,15 @@ walk(root)
  * 
  * @param {string} root 
  */
-function walk(root) {
+async function walk(root) {
     for (let p of fs.readdirSync(root)) {
         p = path.join(root, p)
         if (fs.lstatSync(p).isDirectory()) walk(p)
         else {
             if (p.endsWith('.md')) {
-                const post = generatePost(p)
+                const post = await generatePost(p)
                 // console.log(post);
+                fs.writeFileSync(post.id, JSON.stringify(post, null, 2));
                 break;
             }
         }
@@ -60,7 +75,7 @@ function walk(root) {
 /**
  * 
  * @param {string} p relative path of markdown file
- * @returns IPost
+ * @returns {Promise<IPost>}
  */
 async function generatePost(p) {
     const { mtime } = fs.statSync(p)
@@ -72,19 +87,20 @@ async function generatePost(p) {
 
     const [title, markdownWithoutTitle] = splitTitle(markdown, p)
 
-    const toc = generateToc(markdownWithoutTitle)
+    const toc = await generateToc(markdownWithoutTitle)
 
     return {
         id,
         title,
         date: Date.now(),
         updated: mtime.getTime(),
-        // content,
+        // content: await md2Html(markdownWithoutTitle),
+        content: JSON.stringify(markdownWithoutTitle),
         author: pkg.author.name,
         tags: [],
         category: [],
         related: [],
-        toc: []
+        toc
     }
 }
 
@@ -121,7 +137,7 @@ function splitTitle(markdown, p) {
 /**
  * 
  * @param {string} markdown 
- * @returns {Promise<{items: Item[]} | undefined>}
+ * @returns {Promise<Item>}
  */
 async function generateToc(markdown) {
     /**
@@ -158,27 +174,68 @@ async function generateToc(markdown) {
         .use(rehypeStringify)
 
     await processor.process('## Content\n' + markdown)
-    // fs.writeFileSync('a.html', JSON.stringify(node))
-    if (!node) return
+    if (!node) return { title: '', url: '', items: /** @type {Item[]} */[] }
 
-    /** @type {{items: Item[]}} */
-    const _toc = { items: [] }
+    return ast2Toc(node)
+}
 
-    return node.children.reduce((toc, val) => {
-        toc.items.push(mdNode2Toc(val))
-        return toc;
-    }, _toc)
+/**
+ * @param {Node} node
+ * @returns { Item }
+ * 
+*/
+export function ast2Toc(node) {
+    if (node.type === "list") {
+        const items = /** @type {Parent} */ (node).children.map(ast2Toc)
+        return {
+            title: '',
+            url: '',
+            items
+        }
+    } else if (node.type === "listItem") {
+        const list = /** @type {Parent} */ (node).children.map(ast2Toc)
+        if (list.length === 1) {
+            return {
+                title: list[0].title,
+                url: list[0].url
+            }
+        }
+        return {
+            title: list[0].title,
+            url: list[0].url,
+            items: /** @type {Item[]} */ (list[1].items)
+        }
+    } else if (node.type === 'paragraph') {
+        return ast2Toc(/** @type {Parent} */(node).children[0])
+    } else if (node.type === 'link') {
+        return {
+            title: /** @type {any} */ (/** @type {Parent} */ (node).children[0]).value,
+            url: /** @type {any} */ (node).url
+        }
+    }
+    return {
+        title: '',
+        url: '',
+        items: []
+    }
 }
 
 /**
  * 
- * @param {Node} node
- * @returns {Item}
+ * @param {string} markdown 
+ * @returns {Promise<string>}
  */
-function mdNode2Toc(node) {
+async function md2Html(markdown) {
+    const processor = unified()
+        .use(remarkParse)
+        // @ts-ignore
+        .use(remarkSlug)
+        .use(remarkRehype)
+        .use(remarkGfm)
+        // .use(rehypeDocument)
+        .use(rehypeStringify)
 
-    return {
-        title: "",
-        url: ""
-    }
+    const result = await processor.process('## Content\n' + markdown)
+
+    return /** @type {string} */ (result.value)
 }

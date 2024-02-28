@@ -1,6 +1,6 @@
 import test from 'ava'
 
-import { ast2Toc } from '../generate.js'
+import { ast2Toc } from '../src/content.js'
 
 test('ast node 2 toc of shadcn', t => {
     const src = {

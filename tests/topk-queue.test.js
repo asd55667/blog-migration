@@ -1,4 +1,4 @@
-// https://github.com/datastructures-js/priority-queue/blob/master/test/TopKQueue.test.js
+// https://github.com/datastructures-js/priority-queue/blob/master/test/PriorityQueue.test.js
 
 import test from 'ava';
 import { TopKQueue } from '../src/topk-queue.js';
@@ -14,7 +14,7 @@ const numValues = [
     { id: 40 },
     { id: 20 }
 ];
-
+/** @type {(a: {id:string}, b: {id:string}) => number} */
 const charComparator = (a, b) => (
     a.id < b.id ? 1 : -1
 );
@@ -46,4 +46,25 @@ test('TopKQueue with min logic', t => {
     t.deepEqual(minQ.dequeue(), { id: 30 })
     t.deepEqual(minQ.dequeue(), { id: 20 })
     t.deepEqual(minQ.isEmpty(), true)
+});
+
+test('TopKQueue with max logic', t => {
+    const capacity = 3
+    const maxQ = new TopKQueue(charComparator, capacity);
+
+    charValues.forEach((value) => maxQ.enqueue(value));
+
+    console.log(maxQ.list, charValues.slice().sort(charComparator));
+    t.deepEqual(maxQ.list[0], charValues.slice().sort(charComparator)[capacity - 1])
+
+    t.deepEqual(maxQ.front(), { id: 'm' })
+
+    t.deepEqual(maxQ.size, capacity)
+
+    t.deepEqual(maxQ.isEmpty(), false)
+
+    t.deepEqual(maxQ.dequeue(), { id: 'm' })
+    t.deepEqual(maxQ.dequeue(), { id: 'x' })
+    t.deepEqual(maxQ.dequeue(), { id: 'z' })
+    t.deepEqual(maxQ.isEmpty(), true)
 });

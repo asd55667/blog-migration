@@ -117,6 +117,10 @@ export class TopKQueue {
         this.heapify(this.list)
         return val
     }
+
+    toArray() {
+        return this.list.slice().sort(this.comparator)
+    }
 }
 
 /**

@@ -64,14 +64,15 @@ export async function generatePost(p) {
     const [title, markdownWithoutTitle] = splitTitle(markdown, p)
 
     const toc = await generateToc(markdownWithoutTitle)
+    const content = await md2Html(markdownWithoutTitle)
+    // const content = JSON.stringify(markdownWithoutTitle),
 
     return {
         id,
         title,
         date: Date.now(),
         updated: mtime.getTime(),
-        content: await md2Html(markdownWithoutTitle),
-        // content: JSON.stringify(markdownWithoutTitle),
+        content,
         author: pkg.author.name,
         tags: [],
         category: [],

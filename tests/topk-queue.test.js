@@ -34,12 +34,12 @@ test('TopKQueue with min logic', t => {
     const minQ = new TopKQueue(numComparator, capacity);
     numValues.forEach((value) => minQ.enqueue(value));
 
-    t.deepEqual(minQ.list[0], numValues.slice().sort(numComparator)[capacity - 1])
+    t.deepEqual(minQ.front(), numValues.slice().sort(numComparator)[capacity - 1])
     t.deepEqual(minQ.toArray(), numValues.slice().sort(numComparator).slice(0, capacity))
 
     t.deepEqual(minQ.front(), { id: 40 })
 
-    t.deepEqual(minQ.size, capacity)
+    t.deepEqual(minQ.size(), capacity)
 
     t.deepEqual(minQ.isEmpty(), false)
 
@@ -55,12 +55,12 @@ test('TopKQueue with max logic', t => {
 
     charValues.forEach((value) => maxQ.enqueue(value));
 
-    t.deepEqual(maxQ.list[0], charValues.slice().sort(charComparator)[capacity - 1])
+    t.deepEqual(maxQ.front(), charValues.slice().sort(charComparator)[capacity - 1])
     t.deepEqual(maxQ.toArray(), charValues.slice().sort(charComparator).slice(0, capacity))
 
     t.deepEqual(maxQ.front(), { id: 'm' })
 
-    t.deepEqual(maxQ.size, capacity)
+    t.deepEqual(maxQ.size(), capacity)
 
     t.deepEqual(maxQ.isEmpty(), false)
 

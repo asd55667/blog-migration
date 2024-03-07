@@ -20,7 +20,7 @@ export class TopKQueue {
         /**
          * @type {T[]}
          */
-        this.list = []
+        this._list = []
 
         /**
          * @type {number}
@@ -30,12 +30,12 @@ export class TopKQueue {
         console.assert(this.capacity > 1);
     }
 
-    get size() {
-        return this.list.length;
+    size() {
+        return this._list.length;
     }
 
     isEmpty() {
-        return !this.size
+        return !this.size()
     }
 
     /**
@@ -43,15 +43,15 @@ export class TopKQueue {
      * @param {T} val 
      */
     enqueue(val) {
-        if (this.list.length < this.capacity) {
-            this.list.push(val)
-            const size = this.list.length
+        if (this._list.length < this.capacity) {
+            this._list.push(val)
+            const size = this._list.length
             if (size === 1) return;
 
-            this.update(this.list, size);
-        } else if (this.comparator(val, this.list[0]) < 0) {
-            this.list[0] = val
-            this.heapify(this.list)
+            this.update(this._list, size);
+        } else if (this.comparator(val, this._list[0]) < 0) {
+            this._list[0] = val
+            this.heapify(this._list)
         }
     }
 
@@ -109,17 +109,17 @@ export class TopKQueue {
     }
 
     front() {
-        return this.list[0]
+        return this._list[0]
     }
 
     dequeue() {
-        const val = this.list.shift()
-        this.heapify(this.list)
+        const val = this._list.shift()
+        this.heapify(this._list)
         return val
     }
 
     toArray() {
-        return this.list.slice().sort(this.comparator)
+        return this._list.slice().sort(this.comparator)
     }
 }
 

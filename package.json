@@ -9,7 +9,7 @@
     "url": "https://twitter.com/wcw82645854"
   },
   "scripts": {
-    "generate": "node generate blogs/tech",
+    "generate": "node generate blogs",
     "test": "ava tests"
   },
   "keywords": [],

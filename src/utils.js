@@ -1,6 +1,13 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
+import { previewOfMarkdown } from './content.js'
+
+/**
+ * @typedef {import('./content.js').IPost} IPost
+ * @typedef {import('./content.js').IPostPreview} IPostPreview
+ */
+
 /**
  * 
  * @param {string} dir output path
@@ -11,4 +18,20 @@ export function write(dir, data) {
 
     console.log('write file into:', dir);
     fs.writeFileSync(dir, JSON.stringify(data, null, 2));
+}
+
+/**
+ * simplify post date for preview
+ * @param {IPost} post 
+ * @returns {IPostPreview}
+ */
+export function preview(post) {
+    return {
+        id: post.id,
+        title: post.title,
+        date: post.date,
+        author: post.author,
+        tags: post.tags,
+        content: previewOfMarkdown(post.content),
+    }
 }

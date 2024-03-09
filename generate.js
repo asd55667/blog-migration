@@ -1,8 +1,8 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
-import { generatePost } from './src/content.js'
-import { write } from './src/utils.js'
+import { generatePost, markdown2Html } from './src/content.js'
+import { write, preview } from './src/utils.js'
 import * as D from './src/data.js'
 import { TopKQueue } from './src/topk-queue.js'
 
@@ -21,13 +21,13 @@ generateFrom(root)
  */
 async function generateFrom(root) {
     const queue = new TopKQueue(
-        /** @type {(post: IPost) => number} */(a, b) => b.updated - a.updated,
+        /** @type {(a: IPost, b: IPost) => number} */(a, b) => b.updated - a.updated,
         D.RECENT_COUNT);
 
     console.log('walking from: ', root)
     await walk(root, queue)
 
-    setTimeout(() => write(D.RECENT_POSTS, queue.toArray()))
+    setTimeout(() => write(D.RECENT_POSTS, queue.toArray().map(v => preview(v))))
 }
 
 /**
@@ -44,6 +44,7 @@ async function walk(root, queue) {
 
             queue.enqueue(post)
 
+            post.content = await markdown2Html(post.content)
             write(`${D.POSTS}/${post.id}`, post)
         }
     }

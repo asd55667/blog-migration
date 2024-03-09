@@ -43,6 +43,16 @@ import remarkGfm from 'remark-gfm'
  * @property {Item} toc - a Item property of IPost
  */
 
+/**
+ * @typedef {Object} IPostPreview - creates a new type named 'IPost'
+ * @property {string} id - a string property of IPost
+ * @property {string} title - a string property of IPost
+ * @property {number} date - a number property of IPost
+ * @property {string} content - a string property of IPost
+ * @property {string} author - a string property of IPost
+ * @property {string[]} tags - a string array property of IPost
+ */
+
 
 const require = createRequire(import.meta.url);
 const pkg = require('../package.json')
@@ -64,8 +74,7 @@ export async function generatePost(p) {
     const [title, markdownWithoutTitle] = splitTitle(markdown, p)
 
     const toc = await generateToc(markdownWithoutTitle)
-    const content = await md2Html(markdownWithoutTitle)
-    // const content = JSON.stringify(markdownWithoutTitle),
+    const content = markdownWithoutTitle
 
     return {
         id,
@@ -206,7 +215,7 @@ export function ast2Toc(node) {
  * @param {string} markdown 
  * @returns {Promise<string>}
  */
-async function md2Html(markdown) {
+export async function markdown2Html(markdown) {
     const processor = unified()
         .use(remarkParse)
         // @ts-ignore
@@ -219,4 +228,21 @@ async function md2Html(markdown) {
     const result = await processor.process(markdown)
 
     return /** @type {string} */ (result.value)
+}
+
+/**
+ * get first paragraph of blog
+ * @param {string} markdown 
+ * @returns ${IPostPreview}
+ */
+export function previewOfMarkdown(markdown) {
+    const processor = unified().use(remarkParse).use(remarkStringify)
+
+    const ast = processor.parse(markdown)
+
+    const idx = ast.children.findIndex(node => node.type === 'paragraph')
+
+    if (idx !== -1) ast.children = ast.children.slice(0, idx)
+
+    return processor.stringify(ast)
 }

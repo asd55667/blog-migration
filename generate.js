@@ -5,11 +5,20 @@ import { generatePost, markdown2Html } from './src/content.js'
 import { write, preview } from './src/utils.js'
 import * as D from './src/data.js'
 import { TopKQueue } from './src/topk-queue.js'
-
+import { addCategory } from './src/category.js'
 
 /**
  * @typedef {import('./src/content.js').IPost} IPost
+ * @typedef {import('./src/type.d.ts').ICategory} ICategory
  */
+
+/**
+ * @typedef {Object} Context
+ * @property {TopKQueue<IPost>} queue
+ * @property {string} root
+ * @property {ICategory} categories
+ */
+
 
 const root = process.argv[2] || process.cwd()
 
@@ -24,25 +33,44 @@ async function generateFrom(root) {
         /** @type {(a: IPost, b: IPost) => number} */(a, b) => b.updated - a.updated,
         D.RECENT_COUNT);
 
+    /**
+     * @type {Context}
+     */
+    const context = {
+        queue,
+        root,
+        categories: {
+            title: '',
+            key: '',
+            total: 0,
+            children: []
+        }
+    }
+
     console.log('walking from: ', root)
-    await walk(root, queue)
+    await walk(root, context)
 
     setTimeout(() => write(D.RECENT_POSTS, queue.toArray().map(v => preview(v))))
+
+    write(D.CATEGORY_LIST, context.categories)
 }
 
 /**
  * 
  * @param {string} root 
- * @param {TopKQueue<IPost>} queue
+ * @param {Context} context
  */
-async function walk(root, queue) {
+async function walk(root, context) {
     for (let p of fs.readdirSync(root)) {
         p = path.join(root, p)
-        if (fs.lstatSync(p).isDirectory()) walk(p, queue)
-        else if (p.endsWith('.md')) {
+        if (fs.lstatSync(p).isDirectory()) {
+            addCategory(context.root, p, context.categories)
+
+            walk(p, context)
+        } else if (p.endsWith('.md')) {
             const post = await generatePost(p)
 
-            queue.enqueue(post)
+            context.queue.enqueue(post)
 
             post.content = await markdown2Html(post.content)
             write(`${D.POSTS}/${post.id}`, post)

@@ -35,3 +35,37 @@ export function preview(post) {
         content: previewOfMarkdown(post.content),
     }
 }
+
+/**
+ * 
+ * @param {string} dir 
+ * @returns {number}
+ */
+export function sumMarkdowns(dir) {
+    const files = fs.readdirSync(dir)
+    let n = files.filter(f => f.endsWith('md')).length
+
+    const subDirs = files.filter(f => fs.lstatSync(path.join(dir, f)).isDirectory())
+    if (subDirs.length) {
+        subDirs.forEach(subDir => n += sumMarkdowns(path.join(dir, subDir)))
+    }
+
+    return n
+}
+
+/**
+ * 
+ * @param {string} dir
+ * @returns {boolean}
+ */
+export function isDirectoryEmpty(dir) {
+    const files = fs.readdirSync(dir)
+    if (!files.length) return true
+
+    const subDirs = files.filter(f => fs.lstatSync(path.join(dir, f)).isDirectory())
+    if (!subDirs.length) {
+        return !files.filter(f => f.endsWith('md')).length
+    }
+
+    return !subDirs.map(subDir => !isDirectoryEmpty(path.join(dir, subDir))).filter(Boolean).length
+}

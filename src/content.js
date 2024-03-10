@@ -22,10 +22,12 @@ import remarkGfm from 'remark-gfm'
 
 
 /**
+ * structure for both toc and categories;
+ * root item has always been a empty placeholder, `toc.items.length === 0` to check a toc/categories empty or not
  * @typedef {Object} Item - creates a new type named 'Item'
  * @property {string} title - a string property of Item
  * @property {string} url - a string property of Item
- * @property {Item[]=} items - an optional property of Item
+ * @property {Item[]} items - an optional property of Item
  */
 
 
@@ -185,7 +187,8 @@ export function ast2Toc(node) {
         if (list.length === 1) {
             return {
                 title: list[0].title,
-                url: list[0].url
+                url: list[0].url,
+                items: []
             }
         }
         return {
@@ -198,7 +201,8 @@ export function ast2Toc(node) {
     } else if (node.type === 'link') {
         return {
             title: /** @type {any} */ (/** @type {Parent} */ (node).children[0]).value,
-            url: /** @type {any} */ (node).url
+            url: /** @type {any} */ (node).url,
+            items: [],
         }
     }
     return {

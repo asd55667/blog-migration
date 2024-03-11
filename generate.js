@@ -2,10 +2,10 @@ import fs from 'node:fs'
 import path from 'node:path'
 
 import { generatePost, markdown2Html } from './src/content.js'
-import { write, preview } from './src/utils.js'
+import { write, preview, getRelativePathArray } from './src/utils.js'
 import * as D from './src/data.js'
 import { TopKQueue } from './src/topk-queue.js'
-import { addCategory, Category } from './src/category.js'
+import { addCategory, Category, resolveCategory } from './src/category.js'
 
 /**
  * @typedef {import('./src/content.js').IPost} IPost
@@ -13,7 +13,7 @@ import { addCategory, Category } from './src/category.js'
 
 /**
  * @typedef {Object} Context
- * @property {TopKQueue<IPost>} queue
+ * @property {TopKQueue<IPost>} queue collect recent posts
  * @property {string} root
  * @property {Category} categories
  */
@@ -63,6 +63,8 @@ async function walk(root, context) {
             walk(p, context)
         } else if (p.endsWith('.md')) {
             const post = await generatePost(p)
+
+            const category = resolveCategory(getRelativePathArray(context.root, p), context.categories)
 
             context.queue.enqueue(post)
 

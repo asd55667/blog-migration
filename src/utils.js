@@ -69,3 +69,20 @@ export function isDirectoryEmpty(dir) {
 
     return !subDirs.map(subDir => !isDirectoryEmpty(path.join(dir, subDir))).filter(Boolean).length
 }
+
+/**
+ * 
+ * @param {string} root 
+ * @param {string} f 
+ * @returns {string[]}
+ */
+export function getRelativePathArray(root, f) {
+    let p = f
+    if (root) {
+        let i = root.length
+        if (root[root.length - 1] !== '/') i = i + 1
+        p = p.slice(i)
+    }
+
+    return p.split('/')
+}   

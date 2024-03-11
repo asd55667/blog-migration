@@ -1,5 +1,4 @@
-import { sumMarkdowns, isDirectoryEmpty } from './utils.js'
-
+import { sumMarkdowns, isDirectoryEmpty, getRelativePathArray } from './utils.js'
 
 /**
  * 
@@ -10,18 +9,11 @@ import { sumMarkdowns, isDirectoryEmpty } from './utils.js'
 export function addCategory(root, dir, categories) {
     if (isDirectoryEmpty(dir)) return
 
-    let p = dir
-    if (root) {
-        let i = root.length
-        if (root[root.length - 1] !== '/') i = i + 1
-        p = p.slice(i)
-    }
-
-    const category = p.split('/')
+    const category = getRelativePathArray(root, dir)
     const current = category[category.length - 1]
 
     const total = sumMarkdowns(dir)
-    const parent = category.length === 1 ? categories : resolveCategory(category.slice(0, -1), categories)
+    const parent = category.length === 1 ? categories : resolveCategory(category, categories)
     parent.children.push(new Category(current, current, total))
     parent.total += total
 }
@@ -32,8 +24,8 @@ export function addCategory(root, dir, categories) {
  * @param {Category} categories 
  * @returns {Category}
  */
-function resolveCategory(category, categories) {
-    return category.reduce((prev, key) => {
+export function resolveCategory(category, categories) {
+    return category.slice(0, -1).reduce((prev, key) => {
         let parent = prev.children.find(v => v.key === key)
         if (parent) return parent
         parent = new Category(key, key)

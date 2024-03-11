@@ -5,18 +5,17 @@ import { generatePost, markdown2Html } from './src/content.js'
 import { write, preview } from './src/utils.js'
 import * as D from './src/data.js'
 import { TopKQueue } from './src/topk-queue.js'
-import { addCategory } from './src/category.js'
+import { addCategory, Category } from './src/category.js'
 
 /**
  * @typedef {import('./src/content.js').IPost} IPost
- * @typedef {import('./src/type.d.ts').ICategory} ICategory
  */
 
 /**
  * @typedef {Object} Context
  * @property {TopKQueue<IPost>} queue
  * @property {string} root
- * @property {ICategory} categories
+ * @property {Category} categories
  */
 
 
@@ -39,12 +38,7 @@ async function generateFrom(root) {
     const context = {
         queue,
         root,
-        categories: {
-            title: '',
-            key: '',
-            total: 0,
-            children: []
-        }
+        categories: new Category(),
     }
 
     console.log('walking from: ', root)

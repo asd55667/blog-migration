@@ -15,7 +15,6 @@ export function addCategory(root, dir, categories) {
     const total = sumMarkdowns(dir)
     const parent = category.length === 1 ? categories : resolveCategory(category, categories)
     parent.children.push(new Category(current, current, total))
-    parent.total += total
 }
 
 /**

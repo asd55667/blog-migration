@@ -127,7 +127,8 @@ test('ast node 2 toc of shadcn', t => {
         items: [
             {
                 title: "Contents",
-                url: "#contents"
+                url: "#contents",
+                items: []
             },
             {
                 title: "History",
@@ -135,21 +136,25 @@ test('ast node 2 toc of shadcn', t => {
                 items: [
                     {
                         title: "Discovery",
-                        url: "#discovery"
+                        url: "#discovery",
+                        items: []
                     },
                     {
                         title: "Name and symbol",
-                        url: "#name-and-symbol"
+                        url: "#name-and-symbol",
+                        items: []
                     },
                     {
                         title: "Planet X disproved",
-                        url: "#planet-x-disproved"
+                        url: "#planet-x-disproved",
+                        items: []
                     }
                 ]
             },
             {
                 title: "Orbit",
-                url: "#orbit"
+                url: "#orbit",
+                items: []
             }
         ]
     }

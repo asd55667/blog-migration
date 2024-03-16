@@ -21,7 +21,7 @@ export function addCategory(root, dir, categories) {
  * 
  * @param {string[]} category 
  * @param {Category} categories 
- * @returns {Category}
+ * @returns {Category} parent category of current directory
  */
 export function resolveCategory(category, categories) {
     return category.slice(0, -1).reduce((prev, key) => {

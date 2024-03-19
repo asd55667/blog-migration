@@ -10,7 +10,7 @@
   },
   "scripts": {
     "generate": "node generate blogs",
-    "test": "ava tests"
+    "test": "ava tests/**.test.js"
   },
   "keywords": [],
   "license": "MIT",

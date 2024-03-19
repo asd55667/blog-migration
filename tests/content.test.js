@@ -1,6 +1,8 @@
 import test from 'ava'
+import fs from 'node:fs/promises'
 
-import { ast2Toc } from '../src/content.js'
+import { walk } from '../src/utils-promises.js'
+import { ast2Toc, generatePost, previewOfMarkdown } from '../src/content.js'
 
 test('ast node 2 toc of shadcn', t => {
     const src = {
@@ -162,5 +164,11 @@ test('ast node 2 toc of shadcn', t => {
     t.deepEqual(ast2Toc(src), dst)
 })
 
-
-
+const root = 'tests/fixture'
+test('preview of markdown', t => {
+    walk(root, async (p) => {
+        if (!p.endsWith('.md')) return
+        const markdown = await fs.readFile(p, 'utf-8')
+        t.snapshot(previewOfMarkdown(markdown))
+    })
+})

@@ -17,42 +17,9 @@ import remarkGfm from 'remark-gfm'
  * @typedef {import('mdast-util-toc').Options} Options
  * @typedef {import('unist').Node} Node
  * @typedef {import('unist').Parent} Parent
- */
-
-
-
-/**
- * structure for both toc and categories;
- * root item has always been a empty placeholder, `toc.items.length === 0` to check a toc/categories empty or not
- * @typedef {Object} Item - creates a new type named 'Item'
- * @property {string} title - a string property of Item
- * @property {string} url - a string property of Item
- * @property {Item[]} items - an optional property of Item
- */
-
-
-/**
- * @typedef {Object} IPost - creates a new type named 'IPost'
- * @property {string} id - a string property of IPost
- * @property {string} title - a string property of IPost
- * @property {number} date - a number property of IPost
- * @property {number} updated - a number property of IPost
- * @property {string} content - a string property of IPost
- * @property {string} author - a string property of IPost
- * @property {string[]} tags - a string array property of IPost
- * @property {string[]} category - a string array property of IPost
- * @property {string[]} related - a string array property of IPost
- * @property {Item} toc - a Item property of IPost
- */
-
-/**
- * @typedef {Object} IPostPreview - creates a new type named 'IPost'
- * @property {string} id - a string property of IPost
- * @property {string} title - a string property of IPost
- * @property {number} date - a number property of IPost
- * @property {string} content - a string property of IPost
- * @property {string} author - a string property of IPost
- * @property {string[]} tags - a string array property of IPost
+ * @typedef {import('./type.js').Item} Item
+ * @typedef {import('./type.js').IPost} IPost
+ * @typedef {import('./type.js').IPostPreview} IPostPreview
  */
 
 
@@ -246,7 +213,7 @@ export function previewOfMarkdown(markdown) {
 
     const idx = ast.children.findIndex(node => node.type === 'paragraph')
 
-    if (idx !== -1) ast.children = ast.children.slice(0, idx)
+    if (idx !== -1) ast.children = ast.children.slice(0, idx + 1)
 
     return processor.stringify(ast)
 }

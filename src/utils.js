@@ -4,8 +4,8 @@ import path from 'node:path'
 import { previewOfMarkdown } from './content.js'
 
 /**
- * @typedef {import('./content.js').IPost} IPost
- * @typedef {import('./content.js').IPostPreview} IPostPreview
+ * @typedef {import('./type.js').IPost} IPost
+ * @typedef {import('./type.js').IPostPreview} IPostPreview
  */
 
 /**

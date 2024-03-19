@@ -3,19 +3,13 @@ import path from 'node:path'
 
 import { generatePost, markdown2Html } from './src/content.js'
 import { write, preview, getRelativePathArray } from './src/utils.js'
-import * as D from './src/data.js'
+import { Config } from './src/data.js'
 import { TopKQueue } from './src/topk-queue.js'
 import { addCategory, Category, resolveCategory } from './src/category.js'
 
 /**
- * @typedef {import('./src/content.js').IPost} IPost
- */
-
-/**
- * @typedef {Object} Context
- * @property {TopKQueue<IPost>} queue collect recent posts
- * @property {string} root
- * @property {Category} categories
+ * @typedef {import('./src/type.js').IPost} IPost
+ * @typedef {import('./src/type.js').Context} Context
  */
 
 
@@ -30,7 +24,7 @@ generateFrom(root)
 async function generateFrom(root) {
     const queue = new TopKQueue(
         /** @type {(a: IPost, b: IPost) => number} */(a, b) => b.updated - a.updated,
-        D.RECENT_COUNT);
+        Config.RECENT_COUNT);
 
     /**
      * @type {Context}
@@ -39,14 +33,15 @@ async function generateFrom(root) {
         queue,
         root,
         categories: new Category(),
+        ...Config
     }
 
     console.log('walking from: ', root)
     await walk(root, context)
 
-    setTimeout(() => write(D.RECENT_POSTS, queue.toArray().map(v => preview(v))))
+    setTimeout(() => write(context.RECENT_POSTS, queue.toArray().map(v => preview(v))))
 
-    write(D.CATEGORY_LIST, context.categories)
+    write(context.CATEGORY_LIST, context.categories)
 }
 
 /**
@@ -69,7 +64,7 @@ async function walk(root, context) {
             context.queue.enqueue(post)
 
             post.content = await markdown2Html(post.content)
-            write(`${D.POSTS}/${post.id}`, post)
+            write(`${context.POSTS}/${post.id}`, post)
         }
     }
 }

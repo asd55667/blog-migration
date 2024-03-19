@@ -1,5 +1,5 @@
 /**
- * @typedef {import('./content.js').IPost} IPost
+ * @typedef {import('./type.js').IPost} IPost
  */
 
 /**

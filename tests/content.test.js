@@ -165,8 +165,8 @@ test('ast node 2 toc of shadcn', t => {
 })
 
 const root = 'tests/fixture'
-test('preview of markdown', t => {
-    walk(root, async (p) => {
+test('preview of markdown', async t => {
+    await walk(root, async (p) => {
         if (!p.endsWith('.md')) return
         const markdown = await fs.readFile(p, 'utf-8')
         t.snapshot(previewOfMarkdown(markdown))

@@ -57,3 +57,20 @@ export function preview(post) {
         content: previewOfMarkdown(post.content),
     }
 }
+
+
+/**
+ * 
+ * @param {string} dir output path
+ * @param {unknown} data 
+ */
+export async function write(dir, data) {
+    try {
+        await fs.access(path.dirname(dir))
+    } catch (err) {
+        fs.mkdir(path.dirname(dir), { recursive: true });
+    }
+
+    console.log('write file into:', dir);
+    fs.writeFile(dir, JSON.stringify(data, null, 2));
+}

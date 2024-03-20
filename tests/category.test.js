@@ -1,24 +1,32 @@
 import test from 'ava'
 
 import fs from 'node:fs/promises'
-import { Category, addCategory, resolveCategory } from '../src/category.js'
+import { Category, addCategory, resolveCategory, paginateCategory } from '../src/category.js'
 import { walk } from '../src/utils-promises.js'
 
-const category = new Category()
+const categories = new Category()
 
 const root = 'tests/fixture'
 await walk(root, async (p) => {
-    if ((await fs.lstat(p)).isDirectory()) addCategory(root, p, category)
+    if ((await fs.lstat(p)).isDirectory()) addCategory(root, p, categories)
 })
 
 test('add category', async t => {
-    t.snapshot(category)
+    t.snapshot(categories)
 })
 
 test('resolve category', async t => {
-    const resolved = resolveCategory(['test', 'temp'], category)
+    const resolved = resolveCategory(['test', 'temp'], categories)
 
-    t.snapshot(resolved)
+    t.deepEqual(resolved, new Category('test', 'test', 2,
+        [new Category('temp', 'temp', 1,)])
+    )
+
 })
 
+test('paginate category', async t => {
+    paginateCategory(categories, 5)
+    // TODO:
+    t.deepEqual(1, 1)
+})
 

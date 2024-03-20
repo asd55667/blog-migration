@@ -1,6 +1,10 @@
 import { sumMarkdowns, isDirectoryEmpty, getRelativePathArray } from './utils.js'
 
 /**
+ * @typedef {import('./content.js').IPost} IPost
+ */
+
+/**
  * 
  * @param {string} root walking root
  * @param {string} dir current accessing directory
@@ -46,5 +50,56 @@ export class Category {
         this.key = key ?? ''
         this.total = total ?? 0
         this.children = children ?? []
+
+        /**
+         * @type {IPost[]}
+         */
+        this.posts = []
     }
+
+    /**
+     * 
+     * @param {IPost} post
+     */
+    add(post) {
+        if (!this.posts) this.posts = []
+        // TODO: heap sort
+        this.posts.push(post)
+        this.posts.sort((a, b) => b.updated - a.updated)
+    }
+}
+
+
+/**
+ * 
+ * @param {Category} categories 
+ * @param {number} size
+ */
+export function paginateCategory(categories, size) {
+    /**
+     * @type {Map<string, IPost[][]>}
+     */
+    const map = new Map()
+
+    /**
+     * 
+     * @param {Category} categories 
+     * @param {number} size
+     * @param {string} scope
+     */
+    function paginate(categories, size, scope = '') {
+        categories.children.map(category => {
+            const currentScope = `${scope}/${category.key}`
+            for (let i = 1; i <= Math.ceil((category.posts?.length || 0) / size); i++) {
+                const group = category.posts?.slice((i - 1) * size, i * size)
+                if (map.get(currentScope)) map.get(currentScope)?.push(group)
+                else map.set(currentScope, [])
+            }
+            paginate(category, size, currentScope)
+        })
+    }
+    // TODO: paginate parent category with merge sort
+    paginate(categories, size)
+
+    return map
 }

@@ -35,3 +35,16 @@ export type Context = {
   queue: TopKQueue<IPost>;
   categories: Category;
 } & typeof Config;
+
+export interface IArchive {
+  year: number;
+  months: (IArchiveMonth | null)[];
+  total: number;
+}
+
+export interface IArchiveMonth {
+  month: number;
+  total: number;
+  // TODO: sort by date
+  posts: IPostPreview[];
+}

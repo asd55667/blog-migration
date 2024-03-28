@@ -1,7 +1,7 @@
 import test from 'ava'
 
 import fs from 'node:fs/promises'
-import { Category, addCategory, resolveCategory, paginateCategory } from '../src/category.js'
+import { Category, addCategory, resolveCategory, paginateCategory, merge } from '../src/category.js'
 import { walk } from '../src/utils-promises.js'
 
 const categories = new Category()
@@ -30,3 +30,18 @@ test('paginate category', async t => {
     t.deepEqual(1, 1)
 })
 
+
+test('merge sort', t => {
+    const cmp = (a, b) => a - b
+    let a = [1, 2, 3]
+    let b = [4, 5, 6]
+    t.deepEqual(merge(a, b, cmp), [1, 2, 3, 4, 5, 6])
+
+    a = [4, 5, 6]
+    b = [1, 2, 3]
+    t.deepEqual(merge(a, b, cmp), [1, 2, 3, 4, 5, 6])
+
+    a = [1, 3, 5]
+    b = [2, 4, 6]
+    t.deepEqual(merge(a, b, cmp), [1, 2, 3, 4, 5, 6])
+})

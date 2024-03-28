@@ -103,3 +103,39 @@ export function paginateCategory(categories, size) {
 
     return map
 }
+
+/**
+ * @template T
+ * @param {T[]} l1 
+ * @param {T[]} l2 
+ * @param {(a:T,b:T)=>number} comparator 
+ */
+export function merge(l1, l2, comparator) {
+    /**
+     * @type {T[]}
+     */
+    const l3 = []
+
+    let i = 0, j = 0
+    while (i < l1.length && j < l2.length) {
+        if (comparator(l1[i], l2[j]) < 0) {
+            l3.push(l1[i])
+            i++
+        } else {
+            l3.push(l2[j])
+            j++
+        }
+    }
+
+    while (i < l1.length) {
+        l3.push(l1[i])
+        i++
+    }
+
+    while (j < l2.length) {
+        l3.push(l2[j])
+        j++
+    }
+
+    return l3
+}

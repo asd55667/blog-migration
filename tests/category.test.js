@@ -1,8 +1,8 @@
 import test from 'ava'
-
 import fs from 'node:fs/promises'
 import { Category, addCategory, resolveCategory, paginateCategory, merge } from '../src/category.js'
-import { walk } from '../src/utils-promises.js'
+import { walk, getRelativePathArray } from '../src/utils-promises.js'
+import { generatePost, previewOfMarkdown } from '../src/content.js'
 
 const categories = new Category()
 
@@ -25,9 +25,28 @@ test('resolve category', async t => {
 })
 
 test('paginate category', async t => {
-    paginateCategory(categories, 5)
-    // TODO:
-    t.deepEqual(1, 1)
+    const categories = new Category()
+    await walk(root, async (p) => {
+        if ((await fs.lstat(p)).isDirectory()) {
+            addCategory(root, p, categories)
+        } else if (p.endsWith('.md')) {
+            const post = await generatePost(p)
+            const category = resolveCategory(getRelativePathArray(root, p), categories)
+            category.add(post)
+        }
+    })
+
+    const map = paginateCategory(categories, 5)
+    for (const key of map.keys()) {
+        t.assert(map.get(key).length === 1);
+    }
+
+    t.assert(map.get('/css')[0].length === 1)
+    t.assert(map.get('/media')[0].length === 4)
+    t.assert(map.get('/test')[0].length === 2)
+    t.assert(map.get('/test/temp')[0].length === 1)
+    t.assert(map.get('/ui')[0].length === 3)
+    t.assert(map.get('/vue')[0].length === 2)
 })
 
 

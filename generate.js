@@ -5,7 +5,7 @@ import { generatePost, markdown2Html } from './src/content.js'
 import { write, preview, getRelativePathArray } from './src/utils.js'
 import { Config } from './src/data.js'
 import { TopKQueue } from './src/topk-queue.js'
-import { addCategory, Category, resolveCategory } from './src/category.js'
+import { addCategory, Category, paginateCategory, resolveCategory } from './src/category.js'
 
 /**
  * @typedef {import('./src/type.js').IPost} IPost
@@ -39,9 +39,21 @@ async function generateFrom(root) {
     console.log('walking from: ', root)
     await walk(root, context)
 
-    setTimeout(() => write(context.RECENT_POSTS, queue.toArray().map(v => preview(v))))
+    setTimeout(() => {
+        write(context.RECENT_POSTS, queue.toArray().map(v => preview(v)))
 
-    write(context.CATEGORY_LIST, context.categories)
+        write(context.CATEGORY_LIST, context.categories)
+
+        const map = paginateCategory(context.categories, context.PAGE_SIZE)
+        for (const key of map.keys()) {
+            const pages = map.get(key)
+            if (!pages) continue
+            pages.forEach((page, i) => {
+                write(path.join(context.CATEGORY, `${key}/${i}`), page)
+            })
+        }
+
+    })
 }
 
 /**
@@ -60,6 +72,7 @@ async function walk(root, context) {
             const post = await generatePost(p)
 
             const category = resolveCategory(getRelativePathArray(context.root, p), context.categories)
+            category.add(post)
 
             context.queue.enqueue(post)
 

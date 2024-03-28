@@ -88,17 +88,17 @@ export function paginateCategory(categories, size) {
      * @param {string} scope
      */
     function paginate(categories, size, scope = '') {
-        categories.children.map(category => {
+        categories.children.forEach(category => {
             const currentScope = `${scope}/${category.key}`
-            for (let i = 1; i <= Math.ceil((category.posts?.length || 0) / size); i++) {
-                const group = category.posts?.slice((i - 1) * size, i * size)
-                if (map.get(currentScope)) map.get(currentScope)?.push(group)
-                else map.set(currentScope, [])
-            }
             paginate(category, size, currentScope)
+
+            categories.posts = merge(categories.posts, category.posts, (a, b) => a.updated - b.updated)
+            if (!category.children.length) group(category, size, currentScope, map)
         })
+
+        if (scope && categories.children.length) group(categories, size, scope, map)
     }
-    // TODO: paginate parent category with merge sort
+
     paginate(categories, size)
 
     return map
@@ -138,4 +138,18 @@ export function merge(l1, l2, comparator) {
     }
 
     return l3
+}
+
+/**
+ * @param {Category} category 
+ * @param {number} size 
+ * @param {string} scope 
+ * @param {Map<string, IPost[][]>} map 
+ */
+function group(category, size, scope, map) {
+    for (let i = 1; i <= Math.ceil((category.posts?.length || 0) / size); i++) {
+        const group = category.posts?.slice((i - 1) * size, i * size)
+        if (!map.get(scope)) map.set(scope, [])
+        map.get(scope)?.push(group)
+    }
 }

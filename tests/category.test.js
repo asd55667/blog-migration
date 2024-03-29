@@ -1,15 +1,14 @@
 import test from 'ava'
-import fs from 'node:fs/promises'
+import fs from 'node:fs'
 import { Category, addCategory, resolveCategory, paginateCategory, merge } from '../src/category.js'
-import { getRelativePathArray } from '../src/utils.js'
-import { walk } from '../src/utils-promises.js'
-import { generatePost } from '../src/content.js'
+import { getRelativePathArray, walk } from '../src/utils.js'
+import { generatePostSync } from '../src/content.js'
 
 const categories = new Category()
 
 const root = 'tests/fixture'
-await walk(root, async (p) => {
-    if ((await fs.lstat(p)).isDirectory()) addCategory(root, p, categories)
+walk(root, (p) => {
+    if (fs.lstatSync(p).isDirectory()) addCategory(root, p, categories)
 })
 
 test('add category', async t => {
@@ -25,13 +24,13 @@ test('resolve category', async t => {
 
 })
 
-test('paginate category', async t => {
+test('paginate category', t => {
     const categories = new Category()
-    await walk(root, async (p) => {
-        if ((await fs.lstat(p)).isDirectory()) {
+    walk(root, (p) => {
+        if (fs.lstatSync(p).isDirectory()) {
             addCategory(root, p, categories)
         } else if (p.endsWith('.md')) {
-            const post = await generatePost(p)
+            const post = generatePostSync(p)
             const category = resolveCategory(getRelativePathArray(root, p), categories)
             category.add(post)
         }

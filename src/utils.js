@@ -10,6 +10,19 @@ import { previewOfMarkdown } from './content.js'
 
 /**
  * 
+ * @param {string} root
+ * @param {(p: string) => void} callback
+ */
+export function walk(root, callback) {
+    for (let p of fs.readdirSync(root)) {
+        p = path.join(root, p)
+        callback(p)
+        if ((fs.lstatSync(p)).isDirectory()) walk(p, callback)
+    }
+}
+
+/**
+ * 
  * @param {string} dir output path
  * @param {unknown} data 
  */

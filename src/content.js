@@ -30,10 +30,9 @@ const algorithm = 'md5'
 /**
  * 
  * @param {string} p relative path of markdown file
- * @returns {Promise<IPost>}
  */
-export async function generatePost(p) {
-    const { mtime } = fs.statSync(p)
+function getPostWithoutToc(p) {
+    const { ctime, birthtime, mtime } = fs.statSync(p)
     const markdown = fs.readFileSync(p, 'utf-8')
 
     // id from content hash
@@ -42,19 +41,45 @@ export async function generatePost(p) {
 
     const [title, markdownWithoutTitle] = splitTitle(markdown, p)
 
-    const toc = await generateToc(markdownWithoutTitle)
-    const content = markdownWithoutTitle
-
     return {
         id,
         title,
-        created: Date.now(),
+        created: birthtime ? birthtime.getTime?.() : ctime.getTime(),
         updated: mtime.getTime(),
-        content,
+        content: markdownWithoutTitle,
         author: pkg.author.name,
         tags: [],
         category: [],
         related: [],
+    }
+}
+
+/**
+ * 
+ * @param {string} p relative path of markdown file
+ * @returns {Promise<IPost>}
+ */
+export async function generatePost(p) {
+    const post = getPostWithoutToc(p)
+    const toc = await generateToc(post.content)
+
+    return {
+        ...post,
+        toc
+    }
+}
+
+/**
+ * 
+ * @param {string} p relative path of markdown file
+ * @returns {IPost}
+ */
+export function generatePostSync(p) {
+    const post = getPostWithoutToc(p)
+    const toc = generateTocSync(post.content)
+
+    return {
+        ...post,
         toc
     }
 }
@@ -89,19 +114,14 @@ function splitTitle(markdown, p) {
     return [title, content]
 }
 
-
-
 /**
  * 
  * @param {string} markdown 
  * @returns {Promise<Item>}
  */
 async function generateToc(markdown) {
-    /**
-     * @type {undefined | Parent}
-     */
+    /** @type {Parent=} */
     let node;
-
     /**
      * 
      * @param {Readonly<Options> | null | undefined} [options]
@@ -120,6 +140,7 @@ async function generateToc(markdown) {
             node = result.map
         }
     }
+
     const processor = unified()
         .use(remarkParse)
         // @ts-ignore
@@ -129,6 +150,47 @@ async function generateToc(markdown) {
         .use(rehypeStringify)
 
     await processor.process('## Content\n' + markdown)
+    if (!node) return { title: '', url: '', items: /** @type {Item[]} */[] }
+
+    return ast2Toc(node)
+}
+
+/**
+ * 
+ * @param {string} markdown 
+ * @returns {Item}
+ */
+function generateTocSync(markdown) {
+    /** @type {Parent=} */
+    let node;
+    /**
+     * 
+     * @param {Readonly<Options> | null | undefined} [options]
+     * @returns 
+     */
+    function extractToc(options) {
+        const settings = {
+            heading: (options && options.heading) || '(table[ -]of[ -])?contents?|toc',
+            tight: options && typeof options.tight === 'boolean' ? options.tight : true
+        }
+        /**
+         * @param {Root} tree
+         */
+        return function (tree) {
+            const result = toc(tree, settings)
+            node = result.map
+        }
+    }
+
+    const processor = unified()
+        .use(remarkParse)
+        // @ts-ignore
+        .use(remarkSlug)
+        .use(extractToc)
+        .use(remarkRehype)
+        .use(rehypeStringify)
+
+    processor.processSync('## Content\n' + markdown)
     if (!node) return { title: '', url: '', items: /** @type {Item[]} */[] }
 
     return ast2Toc(node)

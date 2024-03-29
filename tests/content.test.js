@@ -1,8 +1,8 @@
 import test from 'ava'
-import fs from 'node:fs/promises'
+import fs from 'node:fs'
 
-import { walk } from '../src/utils-promises.js'
-import { ast2Toc, generatePost, previewOfMarkdown } from '../src/content.js'
+import { walk } from '../src/utils.js'
+import { ast2Toc, previewOfMarkdown } from '../src/content.js'
 
 test('ast node 2 toc of shadcn', t => {
     const src = {
@@ -165,10 +165,10 @@ test('ast node 2 toc of shadcn', t => {
 })
 
 const root = 'tests/fixture'
-test('preview of markdown', async t => {
-    await walk(root, async (p) => {
+test('preview of markdown', t => {
+    walk(root, (p) => {
         if (!p.endsWith('.md')) return
-        const markdown = await fs.readFile(p, 'utf-8')
+        const markdown = fs.readFileSync(p, 'utf-8')
         t.snapshot(previewOfMarkdown(markdown))
     })
 })

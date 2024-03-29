@@ -29,7 +29,7 @@ export function preview(post) {
     return {
         id: post.id,
         title: post.title,
-        date: post.date,
+        created: post.created,
         author: post.author,
         tags: post.tags,
         content: previewOfMarkdown(post.content),

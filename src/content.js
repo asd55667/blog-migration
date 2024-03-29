@@ -48,7 +48,7 @@ export async function generatePost(p) {
     return {
         id,
         title,
-        date: Date.now(),
+        created: Date.now(),
         updated: mtime.getTime(),
         content,
         author: pkg.author.name,

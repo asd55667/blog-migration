@@ -20,7 +20,7 @@ export class Archive {
      * @param {IPostPreview} post 
      */
     add(post) {
-        const date = new Date(post.date)
+        const date = new Date(post.created)
         const year = date.getFullYear()
         const month = date.getMonth()
 

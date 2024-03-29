@@ -6,7 +6,7 @@ import { Archive } from '../src/archive.js'
 test('Archive', t => {
     const archive = new Archive()
 
-    archive.add({ date: '2020-01-01' })
+    archive.add({ created: '2020-01-01' })
 
     t.is(archive.total, 1)
     t.is(archive.start, new Date('2020-01-01').getTime())
@@ -17,7 +17,7 @@ test('Archive', t => {
     t.is(archive.get(2020).months[0].total, 1)
     t.is(archive.get(2020).months[0].posts.length, 1)
 
-    archive.add({ date: '2020-01-02' })
+    archive.add({ created: '2020-01-02' })
 
     t.is(archive.total, 2)
     t.is(archive.start, new Date('2020-01-01').getTime())
@@ -28,7 +28,7 @@ test('Archive', t => {
     t.is(archive.get(2020).months[0].total, 2)
     t.is(archive.get(2020).months[0].posts.length, 2)
 
-    archive.add({ date: '2020-02-01' })
+    archive.add({ created: '2020-02-01' })
 
     t.is(archive.total, 3)
     t.is(archive.start, new Date('2020-01-01').getTime())
@@ -41,7 +41,7 @@ test('Archive', t => {
     t.is(archive.get(2020).months[1].total, 1)
     t.is(archive.get(2020).months[1].posts.length, 1)
 
-    archive.add({ date: '2019-01-01' })
+    archive.add({ created: '2019-01-01' })
     t.is(archive.total, 4)
     t.is(archive.start, new Date('2019-01-01').getTime())
     t.is(archive.end, new Date('2020-02-01').getTime())
@@ -57,7 +57,7 @@ test('Archive', t => {
     t.is(archive.get(2019).months[0].posts.length, 1)
 
 
-    archive.add({ date: '2019-01-01' })
+    archive.add({ created: '2019-01-01' })
     t.is(archive.total, 5)
     t.is(archive.start, new Date('2019-01-01').getTime())
     t.is(archive.end, new Date('2020-02-01').getTime())
@@ -72,7 +72,7 @@ test('Archive', t => {
     t.is(archive.get(2019).months[0].total, 2)
     t.is(archive.get(2019).months[0].posts.length, 2)
 
-    archive.add({ date: '2019-02-01' })
+    archive.add({ created: '2019-02-01' })
     t.is(archive.total, 6)
     t.is(archive.start, new Date('2019-01-01').getTime())
     t.is(archive.end, new Date('2020-02-01').getTime())

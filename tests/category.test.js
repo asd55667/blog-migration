@@ -1,8 +1,9 @@
 import test from 'ava'
 import fs from 'node:fs/promises'
 import { Category, addCategory, resolveCategory, paginateCategory, merge } from '../src/category.js'
-import { walk, getRelativePathArray } from '../src/utils-promises.js'
-import { generatePost, previewOfMarkdown } from '../src/content.js'
+import { getRelativePathArray } from '../src/utils.js'
+import { walk } from '../src/utils-promises.js'
+import { generatePost } from '../src/content.js'
 
 const categories = new Category()
 

@@ -5,7 +5,7 @@ import type { Config } from "./data.js";
 export interface IPost {
   id: string;
   title: string;
-  date: number;
+  created: number;
   updated: number;
   content: string;
   author: string;
@@ -24,7 +24,7 @@ export interface Item {
 export interface IPostPreview {
   id: string;
   title: string;
-  date: number;
+  created: number;
   content: string;
   author: string;
   tags: string[];

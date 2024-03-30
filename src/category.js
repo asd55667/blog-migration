@@ -1,4 +1,4 @@
-import { sumMarkdowns, isDirectoryEmpty, getRelativePathArray } from './utils.js'
+import { insert, sumMarkdowns, isDirectoryEmpty, getRelativePathArray } from './utils.js'
 
 /**
  * @typedef {import('./content.js').IPost} IPost
@@ -55,17 +55,6 @@ export class Category {
          * @type {IPost[]}
          */
         this.posts = []
-    }
-
-    /**
-     * 
-     * @param {IPost} post
-     */
-    add(post) {
-        if (!this.posts) this.posts = []
-        // TODO: heap sort
-        this.posts.push(post)
-        this.posts.sort((a, b) => b.updated - a.updated)
     }
 }
 

@@ -1,7 +1,9 @@
 /**
- * @typedef {import('./type.d.ts').IArchive} IArchive
- * @typedef {import('./type.d.ts').IPostPreview} IPostPreview
+ * @typedef {import('./type.js').IArchive} IArchive
+ * @typedef {import('./type.js').IPostPreview} IPostPreview
  */
+
+import { insert } from './utils.js';
 
 export class Archive {
     constructor() {
@@ -30,7 +32,7 @@ export class Archive {
             const monthArchive = archive.months[month]
             if (monthArchive) {
                 monthArchive.total += 1
-                monthArchive.posts.push(post)
+                insert(monthArchive.posts, post, (a, b) => a.created - b.created)
             } else {
                 archive.months[month] = {
                     month,

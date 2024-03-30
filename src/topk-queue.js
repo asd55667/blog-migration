@@ -74,11 +74,7 @@ export class TopKQueue {
      * @param {T[]} array 
      */
     heapify(array) {
-        const n = array.length - 1
-        let i = n % 2 ? (n - 1) / 2 : n / 2
-        if (i === 0) this.#heapify(array, 1)
-
-        for (; i >= 1; i--) {
+        for (let i = Math.floor((array.length - 1) / 2); i >= 0; i--) {
             this.#heapify(array, i);
         }
     }
@@ -89,22 +85,33 @@ export class TopKQueue {
      * @param {number} i
      */
     #heapify(array, i) {
-        const n = array.length;
+        const n = array.length - 1;
         let largest = i
         let l = 2 * i
         let r = 2 * i + 1
 
-        if (l <= n && this.comparator(array[l - 1], array[i - 1]) > 0) {
+        if (l <= n && this.comparator(array[l], array[i]) > 0) {
             largest = l
         }
 
-        if (r <= n && this.comparator(array[r - 1], array[largest - 1]) > 0) {
+        if (r <= n && this.comparator(array[r], array[largest]) > 0) {
             largest = r
         }
 
         if (largest !== i) {
-            swap(array, i - 1, largest - 1)
+            swap(array, i, largest)
             this.#heapify(array, largest)
+        }
+    }
+
+    sort() {
+        let k = this._list.length - 1
+        this.heapify(this._list)
+
+        for (let i = k; i >= 0; i--) {
+            swap(this._list, 0, k)
+            k -= 1
+            this.#heapify(this._list, 0)
         }
     }
 

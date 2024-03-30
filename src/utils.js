@@ -98,4 +98,24 @@ export function getRelativePathArray(root, f) {
     }
 
     return p.split('/')
-}   
+}
+
+/**
+ * 
+ * @template T
+ * @param {T[]} array 
+ * @param {T} item 
+ * @param {(a:T,b:T)=>number} comparator 
+ */
+export function insert(array, item, comparator) {
+    let l = 0
+    let r = array.length - 1
+    while (l <= r) {
+        const mid = l + Math.floor((r - l) / 2)
+        if (comparator(item, array[mid]) > 0) {
+            r = mid - 1
+        } else l = mid + 1
+    }
+
+    array.splice(l, 0, item)
+}

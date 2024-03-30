@@ -2,7 +2,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 
 import { generatePost, markdown2Html } from './src/content.js'
-import { write, preview, getRelativePathArray } from './src/utils.js'
+import { write, preview, getRelativePathArray, insert } from './src/utils.js'
 import { walk } from './src/utils-promises.js'
 import { Config } from './src/data.js'
 import { TopKQueue } from './src/topk-queue.js'
@@ -46,7 +46,7 @@ async function generateFrom(root) {
             const post = await generatePost(p)
 
             const category = resolveCategory(getRelativePathArray(context.root, p), context.categories)
-            category.add(post)
+            insert(category.posts, post, (a, b) => a.updated - b.updated)
 
             context.queue.enqueue(post)
 

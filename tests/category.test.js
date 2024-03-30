@@ -1,7 +1,7 @@
 import test from 'ava'
 import fs from 'node:fs'
 import { Category, addCategory, resolveCategory, paginateCategory, merge } from '../src/category.js'
-import { getRelativePathArray, walk } from '../src/utils.js'
+import { getRelativePathArray, insert, walk } from '../src/utils.js'
 import { generatePostSync } from '../src/content.js'
 
 const categories = new Category()
@@ -32,7 +32,7 @@ test('paginate category', t => {
         } else if (p.endsWith('.md')) {
             const post = generatePostSync(p)
             const category = resolveCategory(getRelativePathArray(root, p), categories)
-            category.add(post)
+            insert(category.posts, post, (a, b) => a.updated - b.updated)
         }
     })
 
@@ -63,4 +63,29 @@ test('merge sort', t => {
     a = [1, 3, 5]
     b = [2, 4, 6]
     t.deepEqual(merge(a, b, cmp), [1, 2, 3, 4, 5, 6])
+})
+
+
+test('insert sort', t => {
+    const cmp = (a, b) => a - b
+    const list = []
+
+    insert(list, 1, cmp)
+    insert(list, 3, cmp)
+    insert(list, 2, cmp)
+
+    t.deepEqual(list, [3, 2, 1])
+
+    insert(list, 4, cmp)
+    insert(list, 7, cmp)
+    insert(list, 9, cmp)
+
+    t.deepEqual(list, [9, 7, 4, 3, 2, 1])
+
+    insert(list, 5, cmp)
+    insert(list, 6, cmp)
+    insert(list, 8, cmp)
+
+    t.deepEqual(list, [9, 8, 7, 6, 5, 4, 3, 2, 1])
+
 })

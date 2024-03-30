@@ -45,6 +45,5 @@ export interface IArchive {
 export interface IArchiveMonth {
   month: number;
   total: number;
-  // TODO: sort by date
   posts: IPostPreview[];
 }

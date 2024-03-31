@@ -7,10 +7,8 @@ import { insert } from './utils.js';
 
 export class Archive {
     constructor() {
-        /**
-         * @type {Map<number, IArchive>}
-         */
-        this.map = new Map();
+        /** @type {IArchive[]} */
+        this.list = []
 
         this.total = 0
         this.start = Date.now()
@@ -26,7 +24,7 @@ export class Archive {
         const year = date.getFullYear()
         const month = date.getMonth()
 
-        const archive = this.map.get(year)
+        const archive = this.get(year)
         if (archive) {
             archive.total += 1
             const monthArchive = archive.months[month]
@@ -53,7 +51,7 @@ export class Archive {
                 posts: [post],
             }
 
-            this.map.set(year, archive)
+            insert(this.list, archive, (a, b) => a.year - b.year)
         }
 
         const timestamp = date.getTime()
@@ -65,14 +63,14 @@ export class Archive {
     /**
      * 
      * @param {number} year 
-     * @returns IArchive
+     * @returns {IArchive=}
      */
     get(year) {
-        return this.map.get(year)
+        return this.list.find(archive => archive.year === year)
     }
 
     get years() {
-        return this.map.size
+        return this.list.length
     }
 
     /**
@@ -80,7 +78,7 @@ export class Archive {
      * @returns number
      */
     get months() {
-        return Array.from(this.map.values()).reduce((acc, archive) => {
+        return this.list.reduce((acc, archive) => {
             return acc + archive.months.filter(month => (month?.total || 0) > 0).length
         }, 0)
     }
@@ -90,7 +88,7 @@ export class Archive {
      * @returns IPostPreview[]
      */
     get posts() {
-        return Array.from(this.map.values()).reduce((acc, archive) => {
+        return this.list.reduce((acc, archive) => {
             return acc.concat(archive.months.reduce((acc, month) => {
                 return acc.concat(month?.posts || [])
             }, /** @type {IPostPreview[]} */([])))

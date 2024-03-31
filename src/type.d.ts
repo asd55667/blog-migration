@@ -1,6 +1,7 @@
 import type { Category } from "./category.js";
 import type { TopKQueue } from "./topk-queue.js";
 import type { Config } from "./data.js";
+import { Archive } from "./archive.js";
 
 export interface IPost {
   id: string;
@@ -34,6 +35,7 @@ export type Context = {
   root: string;
   queue: TopKQueue<IPost>;
   categories: Category;
+  archive: Archive
 } & typeof Config;
 
 export interface IArchive {
@@ -44,6 +46,5 @@ export interface IArchive {
 
 export interface IArchiveMonth {
   month: number;
-  total: number;
   posts: IPostPreview[];
 }

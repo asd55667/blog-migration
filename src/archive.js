@@ -1,14 +1,15 @@
 /**
  * @typedef {import('./type.js').IArchive} IArchive
  * @typedef {import('./type.js').IPostPreview} IPostPreview
+ * @typedef {import('./type.js').IPost} IPost
  */
 
-import { insert } from './utils.js';
+import { insert, preview } from './utils.js';
 
 export class Archive {
     constructor() {
         /** @type {IArchive[]} */
-        this.list = []
+        this._list = []
 
         this.total = 0
         this.start = Date.now()
@@ -17,7 +18,7 @@ export class Archive {
 
     /**
      * 
-     * @param {IPostPreview} post 
+     * @param {IPost} post 
      */
     add(post) {
         const date = new Date(post.created)
@@ -29,29 +30,26 @@ export class Archive {
             archive.total += 1
             const monthArchive = archive.months[month]
             if (monthArchive) {
-                monthArchive.total += 1
-                insert(monthArchive.posts, post, (a, b) => a.created - b.created)
+                insert(monthArchive.posts, preview(post), (a, b) => a.created - b.created)
             } else {
                 archive.months[month] = {
                     month,
-                    total: 1,
-                    posts: [post],
+                    posts: [preview(post)],
                 }
             }
         } else {
             const archive = {
                 year,
                 total: 1,
-                months: Array.from({ length: 12 }, (_, i) => ({ month: i, total: 0, posts: /** @type {IPostPreview[]} */ ([]) }))
+                months: Array.from({ length: 12 }, (_, i) => ({ month: i, posts: /** @type {IPostPreview[]} */ ([]) }))
             }
 
             archive.months[month] = {
                 month,
-                total: 1,
-                posts: [post],
+                posts: [preview(post)],
             }
 
-            insert(this.list, archive, (a, b) => a.year - b.year)
+            insert(this._list, archive, (a, b) => a.year - b.year)
         }
 
         const timestamp = date.getTime()
@@ -66,11 +64,11 @@ export class Archive {
      * @returns {IArchive=}
      */
     get(year) {
-        return this.list.find(archive => archive.year === year)
+        return this._list.find(archive => archive.year === year)
     }
 
     get years() {
-        return this.list.length
+        return this._list.length
     }
 
     /**
@@ -78,8 +76,8 @@ export class Archive {
      * @returns number
      */
     get months() {
-        return this.list.reduce((acc, archive) => {
-            return acc + archive.months.filter(month => (month?.total || 0) > 0).length
+        return this._list.reduce((acc, archive) => {
+            return acc + archive.months.filter(month => (month?.posts?.length || 0) > 0).length
         }, 0)
     }
 
@@ -88,10 +86,22 @@ export class Archive {
      * @returns IPostPreview[]
      */
     get posts() {
-        return this.list.reduce((acc, archive) => {
+        return this._list.reduce((acc, archive) => {
             return acc.concat(archive.months.reduce((acc, month) => {
                 return acc.concat(month?.posts || [])
             }, /** @type {IPostPreview[]} */([])))
         }, /** @type {IPostPreview[]} */([]))
+    }
+
+
+    // clean empty month
+    get list() {
+        const archive = this._list.slice()
+
+        archive.forEach(year => {
+            year.months = year.months.filter(month => month?.posts.length)
+        })
+
+        return archive
     }
 }

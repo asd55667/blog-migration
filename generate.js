@@ -7,6 +7,7 @@ import { walk } from './src/utils-promises.js'
 import { Config } from './src/data.js'
 import { TopKQueue } from './src/topk-queue.js'
 import { addCategory, Category, paginateCategory, resolveCategory } from './src/category.js'
+import { Archive } from './src/archive.js'
 
 /**
  * @typedef {import('./src/type.js').IPost} IPost
@@ -34,6 +35,7 @@ async function generateFrom(root) {
         queue,
         root,
         categories: new Category(),
+        archive: new Archive(),
         ...Config
     }
 
@@ -47,6 +49,8 @@ async function generateFrom(root) {
 
             const category = resolveCategory(getRelativePathArray(context.root, p), context.categories)
             insert(category.posts, post, (a, b) => a.updated - b.updated)
+
+            context.archive.add(post)
 
             context.queue.enqueue(post)
 
@@ -75,4 +79,6 @@ function serialize(context) {
             write(path.join(context.CATEGORY, `${key}/${i + 1}`), { posts, pages: pages.length })
         })
     }
+
+    write(context.ARCHIVE_LIST, context.archive.list)
 }

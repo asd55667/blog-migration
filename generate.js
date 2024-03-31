@@ -71,8 +71,8 @@ function serialize(context) {
     for (const key of map.keys()) {
         const pages = map.get(key)
         if (!pages) continue
-        pages.forEach((page, i) => {
-            write(path.join(context.CATEGORY, `${key}/${i}`), page)
+        pages.forEach((posts, i) => {
+            write(path.join(context.CATEGORY, `${key}/${i + 1}`), { posts, pages: pages.length })
         })
     }
 }

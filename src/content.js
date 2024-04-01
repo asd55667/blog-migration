@@ -11,12 +11,19 @@ import { toc } from 'mdast-util-toc'
 import rehypeStringify from 'rehype-stringify'
 import remarkRehype from 'remark-rehype'
 import remarkGfm from 'remark-gfm'
+import rehypeSlug from "rehype-slug"
+import { visit } from "unist-util-visit"
+import rehypePrettyCode from "rehype-pretty-code"
+import rehypeAutolinkHeadings from "rehype-autolink-headings"
+import { getHighlighter, loadTheme } from "@shikijs/compat"
 
 /**
  * @typedef {import('mdast').Root} Root
  * @typedef {import('mdast-util-toc').Options} Options
  * @typedef {import('unist').Node} Node
  * @typedef {import('unist').Parent} Parent
+ * @typedef {import('shiki').Highlighter} Highlighter
+ * @typedef {import('shiki').ThemeInput} ThemeInput
  * @typedef {import('./type.js').Item} Item
  * @typedef {import('./type.js').IPost} IPost
  * @typedef {import('./type.js').IPostPreview} IPostPreview
@@ -255,7 +262,87 @@ export async function markdown2Html(markdown) {
         .use(remarkSlug)
         .use(remarkRehype)
         .use(remarkGfm)
-        // .use(rehypeDocument)
+        .use(rehypeSlug)
+        .use(() => (tree) => {
+            visit(tree, (/** @type {any} */ node) => {
+                if (node?.type === "element" && node?.tagName === "pre") {
+                    const [codeEl] = node.children
+                    if (codeEl.tagName !== "code") {
+                        return
+                    }
+
+                    if (codeEl.data?.meta) {
+                        // Extract event from meta and pass it down the tree.
+                        const regex = /event="([^"]*)"/
+                        const match = codeEl.data?.meta.match(regex)
+                        if (match) {
+                            node.__event__ = match ? match[1] : null
+                            codeEl.data.meta = codeEl.data.meta.replace(regex, "")
+                        }
+                    }
+
+                    node.__rawString__ = codeEl.children?.[0].value
+                    node.__src__ = node.properties?.__src__
+                    node.__style__ = node.properties?.__style__
+                }
+            })
+        })
+        // @ts-ignore
+        .use(rehypePrettyCode, {
+            getHighlighter: async function () {
+                const theme = await loadTheme(/** @type {ThemeInput} */(path.join(process.cwd(), "themes/dark.json")))
+                return /** @type {any} */  (await getHighlighter(/** @type {any} */({ theme })))
+            },
+            onVisitLine(/** @type {any} */ node) {
+                // Prevent lines from collapsing in `display: grid` mode, and allow empty
+                // lines to be copy/pasted
+                if (node.children.length === 0) {
+                    node.children = [{ type: "text", value: " " }]
+                }
+            },
+            onVisitHighlightedLine(/** @type {any} */node) {
+                node.properties.className.push("line--highlighted")
+            },
+            onVisitHighlightedWord(/** @type {any} */node) {
+                node.properties.className = ["word--highlighted"]
+            },
+        })
+        .use(() => (tree) => {
+            visit(tree, (/** @type {any} */ node) => {
+                if (node?.type === "element" && node?.tagName === "div") {
+                    if (!("data-rehype-pretty-code-fragment" in node.properties)) {
+                        return
+                    }
+
+                    const preElement = node.children.at(-1)
+                    if (preElement.tagName !== "pre") {
+                        return
+                    }
+
+                    preElement.properties["__withMeta__"] =
+                        node.children.at(0).tagName === "div"
+                    preElement.properties["__rawString__"] = node.__rawString__
+
+                    if (node.__src__) {
+                        preElement.properties["__src__"] = node.__src__
+                    }
+
+                    if (node.__event__) {
+                        preElement.properties["__event__"] = node.__event__
+                    }
+
+                    if (node.__style__) {
+                        preElement.properties["__style__"] = node.__style__
+                    }
+                }
+            })
+        })
+        .use(rehypeAutolinkHeadings, {
+            properties: {
+                className: ["subheading-anchor"],
+                ariaLabel: "Link to section",
+            },
+        })
         .use(rehypeStringify)
 
     const result = await processor.process(markdown)

@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 devDependencies:
+  '@shikijs/compat':
+    specifier: 1.1.7
+    version: 1.1.7
   '@types/mdast':
     specifier: ^4.0.3
     version: 4.0.3
@@ -20,9 +23,12 @@ devDependencies:
   mdast-util-toc:
     specifier: ^7.0.0
     version: 7.0.0
+  rehype-autolink-headings:
+    specifier: ^7.1.0
+    version: 7.1.0
   rehype-pretty-code:
-    specifier: ^0.13.0
-    version: 0.13.0(shiki@1.1.3)
+    specifier: ^0.6.0
+    version: 0.6.0(shiki@1.1.7)
   rehype-slug:
     specifier: ^6.0.0
     version: 6.0.0
@@ -32,9 +38,6 @@ devDependencies:
   remark:
     specifier: ^15.0.1
     version: 15.0.1
-  remark-code-import:
-    specifier: ^1.2.0
-    version: 1.2.0
   remark-gfm:
     specifier: ^4.0.0
     version: 4.0.0
@@ -50,6 +53,9 @@ devDependencies:
   remark-stringify:
     specifier: ^11.0.0
     version: 11.0.0
+  shiki:
+    specifier: ^1.1.7
+    version: 1.1.7
   unified:
     specifier: ^11.0.4
     version: 11.0.4
@@ -106,8 +112,22 @@ packages:
       picomatch: 2.3.1
     dev: true
 
-  /@shikijs/core@1.1.3:
-    resolution: {integrity: sha512-1QWSvWcPbvZXsDxB1F7ejW+Kuxp3z/JHs944hp/f8BYOlFd5gplzseFIkE/GTu/qytFef3zNME4qw1oHbQ0j2A==, tarball: https://registry.npmmirror.com/@shikijs/core/-/core-1.1.3.tgz}
+  /@shikijs/compat@1.1.7:
+    resolution: {integrity: sha512-yByTP+2Kwtfhc/Bon18RmOFEvt3BIYcH0i4000iWHfoKw/TDEuSoYotKELRCO76mfqqCUdVejzv1+dfxmUr61w==, tarball: https://registry.npmmirror.com/@shikijs/compat/-/compat-1.1.7.tgz}
+    dependencies:
+      '@shikijs/core': 1.1.7
+      '@shikijs/transformers': 1.1.7
+      shiki: 1.1.7
+    dev: true
+
+  /@shikijs/core@1.1.7:
+    resolution: {integrity: sha512-gTYLUIuD1UbZp/11qozD3fWpUTuMqPSf3svDMMrL0UmlGU7D9dPw/V1FonwAorCUJBltaaESxq90jrSjQyGixg==, tarball: https://registry.npmmirror.com/@shikijs/core/-/core-1.1.7.tgz}
+    dev: true
+
+  /@shikijs/transformers@1.1.7:
+    resolution: {integrity: sha512-lXz011ao4+rvweps/9h3CchBfzb1U5OtP5D51Tqc9lQYdLblWMIxQxH6Ybe1GeGINcEVM4goMyPrI0JvlIp4UQ==, tarball: https://registry.npmmirror.com/@shikijs/transformers/-/transformers-1.1.7.tgz}
+    dependencies:
+      shiki: 1.1.7
     dev: true
 
   /@sindresorhus/merge-streams@2.3.0:
@@ -727,15 +747,13 @@ packages:
     resolution: {integrity: sha512-8Rf9Y83NBReMnx0gFzA8JImQACstCYWUplepDa9xprwwtmgEZUF0h/i5xSA625zB/I37EtrswSST6OXxwaaIJQ==}
     dev: true
 
-  /hast-util-from-html@2.0.1:
-    resolution: {integrity: sha512-RXQBLMl9kjKVNkJTIO6bZyb2n+cUH8LFaSSzo82jiLT6Tfc+Pt7VQCS+/h3YwG4jaNE2TA2sdJisGWR+aJrp0g==, tarball: https://registry.npmmirror.com/hast-util-from-html/-/hast-util-from-html-2.0.1.tgz}
+  /hash-obj@4.0.0:
+    resolution: {integrity: sha512-FwO1BUVWkyHasWDW4S8o0ssQXjvyghLV2rfVhnN36b2bbcj45eGiuzdn9XOvOpjV3TKQD7Gm2BWNXdE9V4KKYg==, tarball: https://registry.npmmirror.com/hash-obj/-/hash-obj-4.0.0.tgz}
+    engines: {node: '>=12'}
     dependencies:
-      '@types/hast': 3.0.4
-      devlop: 1.1.0
-      hast-util-from-parse5: 8.0.1
-      parse5: 7.1.2
-      vfile: 6.0.1
-      vfile-message: 4.0.2
+      is-obj: 3.0.0
+      sort-keys: 5.0.0
+      type-fest: 1.4.0
     dev: true
 
   /hast-util-from-parse5@8.0.1:
@@ -753,6 +771,12 @@ packages:
 
   /hast-util-heading-rank@3.0.0:
     resolution: {integrity: sha512-EJKb8oMUXVHcWZTDepnr+WNbfnXKFNf9duMesmr4S8SXTJBJ9M4Yok08pu9vxdJwdlGRhVumk9mEhkEvKGifwA==, tarball: https://registry.npmmirror.com/hast-util-heading-rank/-/hast-util-heading-rank-3.0.0.tgz}
+    dependencies:
+      '@types/hast': 3.0.4
+    dev: true
+
+  /hast-util-is-element@3.0.0:
+    resolution: {integrity: sha512-Val9mnv2IWpLbNPqc/pUem+a7Ipj2aHacCwgNfTiK0vJKl0LF+4Ba4+v1oPHFpf3bLYmreq0/l3Gud9S5OH42g==, tarball: https://registry.npmmirror.com/hast-util-is-element/-/hast-util-is-element-3.0.0.tgz}
     dependencies:
       '@types/hast': 3.0.4
     dev: true
@@ -912,6 +936,11 @@ packages:
   /is-number@7.0.0:
     resolution: {integrity: sha512-41Cifkg6e8TylSpdtTpeLVMqvSBEVzTttHvERD741+pnZ8ANv0004MRL43QKPDlK9cGvNp6NZWZUBlbGXYxxng==}
     engines: {node: '>=0.12.0'}
+    dev: true
+
+  /is-obj@3.0.0:
+    resolution: {integrity: sha512-IlsXEHOjtKhpN8r/tRFj2nDyTmHvcfNeu/nrRIcXE17ROeatXchkojffa1SpdqW4cr/Fj6QkEf/Gn4zf6KKvEQ==, tarball: https://registry.npmmirror.com/is-obj/-/is-obj-3.0.0.tgz}
+    engines: {node: '>=12'}
     dev: true
 
   /is-plain-obj@4.1.0:
@@ -1418,11 +1447,6 @@ packages:
     engines: {node: '>=18'}
     dev: true
 
-  /min-indent@1.0.1:
-    resolution: {integrity: sha512-I9jwMn07Sy/IwOj3zVkVik2JTvgpaykDZEigL6Rx6N9LbMywwUSMtxET+7lVoDLLd3O3IXwJwvuuns8UB/HeAg==, tarball: https://registry.npmmirror.com/min-indent/-/min-indent-1.0.1.tgz}
-    engines: {node: '>=4'}
-    dev: true
-
   /minimatch@3.1.2:
     resolution: {integrity: sha512-J7p63hRiAjw1NDEww1W7i37+ByIrOWO5XQQAzZ3VOcL0PNybwpfmV/N05zFAzwQ9USyEcX6t3UO+K5aqBQOIHw==}
     dependencies:
@@ -1461,6 +1485,12 @@ packages:
 
   /ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
+    dev: true
+
+  /nanoid@4.0.2:
+    resolution: {integrity: sha512-7ZtY5KTCNheRGfEFxnedV5zFiORN1+Y1N6zvPTnHQd8ENUvfaDBeuJDZb2bN/oXwXxu3qkTXDzy57W5vAmDTBw==, tarball: https://registry.npmmirror.com/nanoid/-/nanoid-4.0.2.tgz}
+    engines: {node: ^14 || ^16 || >=18}
+    hasBin: true
     dev: true
 
   /node-fetch@2.7.0:
@@ -1592,27 +1622,27 @@ packages:
       util-deprecate: 1.0.2
     dev: true
 
-  /rehype-parse@9.0.0:
-    resolution: {integrity: sha512-WG7nfvmWWkCR++KEkZevZb/uw41E8TsH4DsY9UxsTbIXCVGbAs4S+r8FrQ+OtH5EEQAs+5UxKC42VinkmpA1Yw==, tarball: https://registry.npmmirror.com/rehype-parse/-/rehype-parse-9.0.0.tgz}
+  /rehype-autolink-headings@7.1.0:
+    resolution: {integrity: sha512-rItO/pSdvnvsP4QRB1pmPiNHUskikqtPojZKJPPPAVx9Hj8i8TwMBhofrrAYRhYOOBZH9tgmG5lPqDLuIWPWmw==, tarball: https://registry.npmmirror.com/rehype-autolink-headings/-/rehype-autolink-headings-7.1.0.tgz}
     dependencies:
       '@types/hast': 3.0.4
-      hast-util-from-html: 2.0.1
-      unified: 11.0.4
-    dev: true
-
-  /rehype-pretty-code@0.13.0(shiki@1.1.3):
-    resolution: {integrity: sha512-+22dz1StXlF7dlMyOySNaVxgcGhMI4BCxq0JxJJPWYGiKsI6cu5jyuIKGHXHvH18D8sv1rdKtvsY9UEfN3++SQ==, tarball: https://registry.npmmirror.com/rehype-pretty-code/-/rehype-pretty-code-0.13.0.tgz}
-    engines: {node: '>=18'}
-    peerDependencies:
-      shiki: ^1.0.0
-    dependencies:
-      '@types/hast': 3.0.4
-      hast-util-to-string: 3.0.0
-      parse-numeric-range: 1.3.0
-      rehype-parse: 9.0.0
-      shiki: 1.1.3
+      '@ungap/structured-clone': 1.2.0
+      hast-util-heading-rank: 3.0.0
+      hast-util-is-element: 3.0.0
       unified: 11.0.4
       unist-util-visit: 5.0.0
+    dev: true
+
+  /rehype-pretty-code@0.6.0(shiki@1.1.7):
+    resolution: {integrity: sha512-VfntYoWYOBVURXYDdB8p/E1sZTm2W5ry89fJyY94WJAo1jUH/5sVhDC7cX5PPnksMyW9PYMxRLNfjkBpSgJrzQ==, tarball: https://registry.npmmirror.com/rehype-pretty-code/-/rehype-pretty-code-0.6.0.tgz}
+    engines: {node: ^12.16.0 || >=13.2.0}
+    peerDependencies:
+      shiki: '*'
+    dependencies:
+      hash-obj: 4.0.0
+      nanoid: 4.0.2
+      parse-numeric-range: 1.3.0
+      shiki: 1.1.7
     dev: true
 
   /rehype-slug@6.0.0:
@@ -1631,15 +1661,6 @@ packages:
       '@types/hast': 3.0.4
       hast-util-to-html: 9.0.0
       unified: 11.0.4
-    dev: true
-
-  /remark-code-import@1.2.0:
-    resolution: {integrity: sha512-fgwLruqlZbVOIhCJFjY+JDwPZhA4/eK3InJzN8Ox8UDdtudpG212JwtRj6la+lAzJU7JmSEyewZSukVZdknt3Q==, tarball: https://registry.npmmirror.com/remark-code-import/-/remark-code-import-1.2.0.tgz}
-    engines: {node: '>= 12'}
-    dependencies:
-      strip-indent: 4.0.0
-      to-gatsby-remark-plugin: 0.1.0
-      unist-util-visit: 4.1.2
     dev: true
 
   /remark-gfm@4.0.0:
@@ -1769,10 +1790,10 @@ packages:
     resolution: {integrity: sha512-KiKBS8AnWGEyLzofFfmvKwpdPzqiy16LvQfK3yv/fVH7Bj13/wl3JSR1J+rfgRE9q7xUJK4qvgS8raSOeLUehw==}
     dev: true
 
-  /shiki@1.1.3:
-    resolution: {integrity: sha512-k/B4UvtWmGcHMLp6JnQminlex3Go5MHKXEiormmzTJECAiSQiwSon6USuwTyto8EMUQc9aYRJ7HojkfVLbBk+g==, tarball: https://registry.npmmirror.com/shiki/-/shiki-1.1.3.tgz}
+  /shiki@1.1.7:
+    resolution: {integrity: sha512-9kUTMjZtcPH3i7vHunA6EraTPpPOITYTdA5uMrvsJRexktqP0s7P3s9HVK80b4pP42FRVe03D7fT3NmJv2yYhw==, tarball: https://registry.npmmirror.com/shiki/-/shiki-1.1.7.tgz}
     dependencies:
-      '@shikijs/core': 1.1.3
+      '@shikijs/core': 1.1.7
     dev: true
 
   /signal-exit@3.0.7:
@@ -1795,6 +1816,13 @@ packages:
     dependencies:
       ansi-styles: 6.2.1
       is-fullwidth-code-point: 4.0.0
+    dev: true
+
+  /sort-keys@5.0.0:
+    resolution: {integrity: sha512-Pdz01AvCAottHTPQGzndktFNdbRA75BgOfeT1hH+AMnJFv8lynkPi42rfeEhpx1saTEI3YNMWxfqu0sFD1G8pw==, tarball: https://registry.npmmirror.com/sort-keys/-/sort-keys-5.0.0.tgz}
+    engines: {node: '>=12'}
+    dependencies:
+      is-plain-obj: 4.1.0
     dev: true
 
   /space-separated-tokens@2.0.2:
@@ -1857,13 +1885,6 @@ packages:
       ansi-regex: 6.0.1
     dev: true
 
-  /strip-indent@4.0.0:
-    resolution: {integrity: sha512-mnVSV2l+Zv6BLpSD/8V87CW/y9EmmbYzGCIavsnsI6/nwn26DwffM/yztm30Z/I2DY9wdS3vXVCMnHDgZaVNoA==, tarball: https://registry.npmmirror.com/strip-indent/-/strip-indent-4.0.0.tgz}
-    engines: {node: '>=12'}
-    dependencies:
-      min-indent: 1.0.1
-    dev: true
-
   /supertap@3.0.1:
     resolution: {integrity: sha512-u1ZpIBCawJnO+0QePsEiOknOfCRq0yERxiAchT0i4li0WHNUJbf0evXXSXOcCAR4M8iMDoajXYmstm/qO81Isw==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
@@ -1896,24 +1917,11 @@ packages:
     engines: {node: '>=4'}
     dev: true
 
-  /to-gatsby-remark-plugin@0.1.0:
-    resolution: {integrity: sha512-blmhJ/gIrytWnWLgPSRCkhCPeki6UBK2daa3k9mGahN7GjwHu8KrS7F70MvwlsG7IE794JLgwAdCbi4hU4faFQ==, tarball: https://registry.npmmirror.com/to-gatsby-remark-plugin/-/to-gatsby-remark-plugin-0.1.0.tgz}
-    dependencies:
-      to-vfile: 6.1.0
-    dev: true
-
   /to-regex-range@5.0.1:
     resolution: {integrity: sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==}
     engines: {node: '>=8.0'}
     dependencies:
       is-number: 7.0.0
-    dev: true
-
-  /to-vfile@6.1.0:
-    resolution: {integrity: sha512-BxX8EkCxOAZe+D/ToHdDsJcVI4HqQfmw0tCkp31zf3dNP/XWIAjU4CmeuSwsSoOzOTqHPOL0KUzyZqJplkD0Qw==, tarball: https://registry.npmmirror.com/to-vfile/-/to-vfile-6.1.0.tgz}
-    dependencies:
-      is-buffer: 2.0.5
-      vfile: 4.2.1
     dev: true
 
   /tr46@0.0.3:
@@ -1930,6 +1938,11 @@ packages:
 
   /type-fest@0.13.1:
     resolution: {integrity: sha512-34R7HTnG0XIJcBSn5XhDd7nNFPRcXYRZrBB2O2jdKqYODldSzBAqzsWoZYYvduky73toYS/ESqxPvkDf/F0XMg==}
+    engines: {node: '>=10'}
+    dev: true
+
+  /type-fest@1.4.0:
+    resolution: {integrity: sha512-yGSza74xk0UG8k+pLh5oeoYirvIiWo5t0/o3zHHAO2tRDiZcxWP7fywNlXhqb6/r6sWvwi+RsyQMWhVLe4BVuA==, tarball: https://registry.npmmirror.com/type-fest/-/type-fest-1.4.0.tgz}
     engines: {node: '>=10'}
     dev: true
 
@@ -1982,12 +1995,6 @@ packages:
     resolution: {integrity: sha512-fucsC7HjXvkB5R3kTCO7kUjRdrS0BJt3M/FPxmHMBOm8JQi2BsHAHFsy27E0EolP8rp0NzXsJ+jNPyDWvOJZPA==, tarball: https://registry.npmmirror.com/unist-util-position/-/unist-util-position-5.0.0.tgz}
     dependencies:
       '@types/unist': 3.0.2
-    dev: true
-
-  /unist-util-stringify-position@2.0.3:
-    resolution: {integrity: sha512-3faScn5I+hy9VleOq/qNbAd6pAx7iH5jYBMS9I1HgQVijz/4mv5Bvw5iw1sC/90CODiKo81G/ps8AJrISn687g==, tarball: https://registry.npmmirror.com/unist-util-stringify-position/-/unist-util-stringify-position-2.0.3.tgz}
-    dependencies:
-      '@types/unist': 2.0.10
     dev: true
 
   /unist-util-stringify-position@3.0.3:
@@ -2043,13 +2050,6 @@ packages:
       vfile: 6.0.1
     dev: true
 
-  /vfile-message@2.0.4:
-    resolution: {integrity: sha512-DjssxRGkMvifUOJre00juHoP9DPWuzjxKuMDrhNbk2TdaYYBNMStsNhEOt3idrtI12VQYM/1+iM0KOzXi4pxwQ==, tarball: https://registry.npmmirror.com/vfile-message/-/vfile-message-2.0.4.tgz}
-    dependencies:
-      '@types/unist': 2.0.10
-      unist-util-stringify-position: 2.0.3
-    dev: true
-
   /vfile-message@3.1.4:
     resolution: {integrity: sha512-fa0Z6P8HUrQN4BZaX05SIVXic+7kE3b05PWAtPuYP9QLHsLKYR7/AlLW3NtOrpXRLeawpDLMsVkmk5DG0NXgWw==, tarball: https://registry.npmmirror.com/vfile-message/-/vfile-message-3.1.4.tgz}
     dependencies:
@@ -2062,15 +2062,6 @@ packages:
     dependencies:
       '@types/unist': 3.0.2
       unist-util-stringify-position: 4.0.0
-    dev: true
-
-  /vfile@4.2.1:
-    resolution: {integrity: sha512-O6AE4OskCG5S1emQ/4gl8zK586RqA3srz3nfK/Viy0UPToBc5Trp9BVFb1u0CjsKrAWwnpr4ifM/KBXPWwJbCA==, tarball: https://registry.npmmirror.com/vfile/-/vfile-4.2.1.tgz}
-    dependencies:
-      '@types/unist': 2.0.10
-      is-buffer: 2.0.5
-      unist-util-stringify-position: 2.0.3
-      vfile-message: 2.0.4
     dev: true
 
   /vfile@5.3.7:

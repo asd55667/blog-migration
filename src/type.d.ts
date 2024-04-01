@@ -35,12 +35,12 @@ export type Context = {
   root: string;
   queue: TopKQueue<IPost>;
   categories: Category;
-  archive: Archive
+  archive: Archive;
 } & typeof Config;
 
 export interface IArchive {
   year: number;
-  months: (IArchiveMonth | null)[];
+  months: IArchiveMonth[];
   total: number;
 }
 

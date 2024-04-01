@@ -119,3 +119,17 @@ export function insert(array, item, comparator) {
 
     array.splice(l, 0, item)
 }
+
+/**
+ * @param {{posts: (IPost|IPostPreview)[]}} category 
+ * @param {number} size 
+ * @param {string} scope 
+ * @param {Map<string, (IPost|IPostPreview)[][]>} map 
+ */
+export function group(category, size, scope, map) {
+    for (let i = 1; i <= Math.ceil((category.posts?.length || 0) / size); i++) {
+        const group = category.posts?.slice((i - 1) * size, i * size)
+        if (!map.get(scope)) map.set(scope, [])
+        map.get(scope)?.push(group)
+    }
+}

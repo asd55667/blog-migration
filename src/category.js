@@ -1,7 +1,8 @@
-import { insert, sumMarkdowns, isDirectoryEmpty, getRelativePathArray } from './utils.js'
+import { group, sumMarkdowns, isDirectoryEmpty, getRelativePathArray } from './utils.js'
 
 /**
  * @typedef {import('./content.js').IPost} IPost
+ * @typedef {import('./content.js').IPostPreview} IPostPreview
  */
 
 /**
@@ -66,7 +67,7 @@ export class Category {
  */
 export function paginateCategory(categories, size) {
     /**
-     * @type {Map<string, IPost[][]>}
+     * @type {Map<string, (IPost|IPostPreview)[][]>}
      */
     const map = new Map()
 
@@ -127,18 +128,4 @@ export function merge(l1, l2, comparator) {
     }
 
     return l3
-}
-
-/**
- * @param {Category} category 
- * @param {number} size 
- * @param {string} scope 
- * @param {Map<string, IPost[][]>} map 
- */
-function group(category, size, scope, map) {
-    for (let i = 1; i <= Math.ceil((category.posts?.length || 0) / size); i++) {
-        const group = category.posts?.slice((i - 1) * size, i * size)
-        if (!map.get(scope)) map.set(scope, [])
-        map.get(scope)?.push(group)
-    }
 }

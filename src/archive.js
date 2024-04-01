@@ -4,7 +4,7 @@
  * @typedef {import('./type.js').IPost} IPost
  */
 
-import { insert, preview } from './utils.js';
+import { group, insert, preview } from './utils.js';
 
 export class Archive {
     constructor() {
@@ -104,4 +104,24 @@ export class Archive {
 
         return archive
     }
+}
+
+/**
+ * 
+ * @param {IArchive[]} list 
+ * @param {number} size 
+ */
+export function paginateArchive(list, size) {
+    /**
+     * @type {Map<string, IPostPreview[][]>}
+     */
+    const map = new Map()
+
+    list.forEach(year => {
+        year.months.forEach(month => {
+            group(month, size, `${year.year}/${month.month + 1}`, map)
+        })
+    })
+
+    return map
 }

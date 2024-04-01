@@ -7,6 +7,9 @@ export const PAGE_SIZE = 5
 export const CATEGORY = `${root}/category`
 export const CATEGORY_LIST = `${root}/category/list`
 
+export const ARCHIVE = `${root}/archive`
+export const ARCHIVE_LIST = `${root}/archive/list`
+
 export const RECENT_COUNT = 5
 
 export const Config = {
@@ -15,5 +18,7 @@ export const Config = {
     PAGE_SIZE,
     CATEGORY,
     CATEGORY_LIST,
-    RECENT_COUNT
+    RECENT_COUNT,
+    ARCHIVE,
+    ARCHIVE_LIST
 }

@@ -7,10 +7,11 @@ import { walk } from './src/utils-promises.js'
 import { Config } from './src/data.js'
 import { TopKQueue } from './src/topk-queue.js'
 import { addCategory, Category, paginateCategory, resolveCategory } from './src/category.js'
-import { Archive } from './src/archive.js'
+import { Archive, paginateArchive } from './src/archive.js'
 
 /**
  * @typedef {import('./src/type.js').IPost} IPost
+ * @typedef {import('./src/type.js').IPostPreview} IPostPreview
  * @typedef {import('./src/type.js').Context} Context
  */
 
@@ -71,14 +72,24 @@ function serialize(context) {
 
     write(context.CATEGORY_LIST, context.categories)
 
-    const map = paginateCategory(context.categories, context.PAGE_SIZE)
+    serializePagination(context.CATEGORY, paginateCategory(context.categories, context.PAGE_SIZE))
+
+    const archive = context.archive.list
+    write(context.ARCHIVE_LIST, context.archive.list)
+    serializePagination(context.ARCHIVE, paginateArchive(archive, context.PAGE_SIZE))
+}
+
+/**
+ * 
+ * @param {string} dir
+ * @param {Map<string, IPostPreview[][]>} map 
+ */
+function serializePagination(dir, map) {
     for (const key of map.keys()) {
         const pages = map.get(key)
         if (!pages) continue
         pages.forEach((posts, i) => {
-            write(path.join(context.CATEGORY, `${key}/${i + 1}`), { posts, pages: pages.length })
+            write(path.join(dir, `${key}/${i + 1}`), { posts, pages: pages.length })
         })
     }
-
-    write(context.ARCHIVE_LIST, context.archive.list)
 }

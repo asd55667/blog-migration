@@ -100,6 +100,7 @@ export class Archive {
 
         archive.forEach(year => {
             year.months = year.months.filter(month => month?.posts.length)
+            year.months.sort((a, b) => b.month - a.month)
         })
 
         return archive

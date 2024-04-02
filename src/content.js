@@ -16,6 +16,8 @@ import { visit } from "unist-util-visit"
 import rehypePrettyCode from "rehype-pretty-code"
 import rehypeAutolinkHeadings from "rehype-autolink-headings"
 import { getHighlighter, loadTheme } from "@shikijs/compat"
+import rehypeRaw from 'rehype-raw'
+
 
 /**
  * @typedef {import('mdast').Root} Root
@@ -260,8 +262,9 @@ export async function markdown2Html(markdown) {
         .use(remarkParse)
         // @ts-ignore
         .use(remarkSlug)
-        .use(remarkRehype)
         .use(remarkGfm)
+        .use(remarkRehype, { allowDangerousHtml: true })
+        .use(rehypeRaw)
         .use(rehypeSlug)
         .use(() => (tree) => {
             visit(tree, (/** @type {any} */ node) => {

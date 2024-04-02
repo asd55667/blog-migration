@@ -55,8 +55,8 @@ async function generateFrom(root) {
 
             context.queue.enqueue(post)
 
-            post.content = await markdown2Html(post.content)
-            write(`${context.POSTS}/${post.id}`, post)
+            const content = await markdown2Html(post.content)
+            write(`${context.POSTS}/${post.id}`, { ...post, content })
         }
     })
 
@@ -67,8 +67,13 @@ async function generateFrom(root) {
  * 
  * @param {Context} context 
  */
-function serialize(context) {
-    write(context.RECENT_POSTS, context.queue.toArray().map(v => preview(v)))
+async function serialize(context) {
+    const recent = await Promise.all(context.queue.toArray().map(async v => {
+        const post = preview(v)
+        post.content = await markdown2Html(post.content)
+        return post
+    }))
+    write(context.RECENT_POSTS, recent)
 
     write(context.CATEGORY_LIST, context.categories)
 

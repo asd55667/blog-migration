@@ -1,7 +1,7 @@
 {
-  "name": "blogs",
+  "name": "blog-migration",
   "version": "1.0.0",
-  "description": "static blog content",
+  "description": "migration for static blog content",
   "main": "generate.js",
   "type": "module",
   "author": {
@@ -10,6 +10,7 @@
   },
   "scripts": {
     "generate": "node generate blogs",
+    "migrate:mdx": "node migrating2mdx blogs mdx",
     "test": "ava tests/**.test.js"
   },
   "keywords": [],

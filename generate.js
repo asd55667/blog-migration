@@ -55,8 +55,8 @@ async function generateFrom(root) {
 
             context.queue.enqueue(post)
 
-            const content = await markdown2Html(post.content)
-            write(`${context.POSTS}/${post.id}`, { ...post, content })
+            // const content = await markdown2Html(post.content)
+            // write(`${context.POSTS}/${post.id}`, { ...post, content })
         }
     })
 

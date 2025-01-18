@@ -4,11 +4,12 @@
  * @typedef {import('./type.js').IPost} IPost
  */
 
+import { renderPostMeta, renderYears, renderYear, renderMonth } from './ui.js';
 import { group, insert, preview } from './utils.js';
 
 export class Archive {
     constructor() {
-        /** @type {IArchive[]} */
+        /** @private @type {IArchive[]} */
         this._list = []
 
         this.total = 0
@@ -125,4 +126,20 @@ export function paginateArchive(list, size) {
     })
 
     return map
+}
+
+/**
+ * 
+ * @param {string} title 
+ * @param {string} description 
+ * @param {() => string} callback 
+ * @returns {string}
+ */
+export function archive2mdx(title, description, callback) {
+    let mdx = renderPostMeta({
+        title,
+        description
+    })
+    mdx += callback()
+    return mdx
 }

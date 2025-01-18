@@ -13,10 +13,14 @@ import remarkRehype from 'remark-rehype'
 import remarkGfm from 'remark-gfm'
 import rehypeSlug from "rehype-slug"
 import { visit } from "unist-util-visit"
+// @ts-ignore
 import rehypePrettyCode from "rehype-pretty-code"
 import rehypeAutolinkHeadings from "rehype-autolink-headings"
 import { getHighlighter, loadTheme } from "@shikijs/compat"
 import rehypeRaw from 'rehype-raw'
+
+import { splitContent } from './md2mdx.js'
+import { resolveDate } from './utils.js';
 
 
 /**
@@ -41,25 +45,34 @@ const algorithm = 'md5'
  * @param {string} p relative path of markdown file
  */
 function getPostWithoutToc(p) {
-    const { ctime, birthtime, mtime } = fs.statSync(p)
     const markdown = fs.readFileSync(p, 'utf-8')
 
     // id from content hash
     const hash = crypto.createHash(algorithm);
     const id = hash.update(markdown, 'utf-8').digest('hex')
 
-    const [title, markdownWithoutTitle] = splitTitle(markdown, p)
+    const { title, date, description, content } = splitContent(markdown, p)
+
+    /** @type {string[]} */
+    const tags = []
+
+    /** @type {string[]} */
+    const category = []
+    
+    /** @type {string[]} */
+    const related = []
 
     return {
         id,
         title,
-        created: birthtime ? birthtime.getTime?.() : ctime.getTime(),
-        updated: mtime.getTime(),
-        content: markdownWithoutTitle,
+        description,
+        created: resolveDate(date),
+        updated: resolveDate(date),
+        content,
         author: pkg.author.name,
-        tags: [],
-        category: [],
-        related: [],
+        tags,
+        category,
+        related,
     }
 }
 
@@ -91,36 +104,6 @@ export function generatePostSync(p) {
         ...post,
         toc
     }
-}
-
-/**
- * 
- * @param {string} markdown 
- * @param {string} p
- */
-function splitTitle(markdown, p) {
-    const processor = unified()
-        .use(remarkParse)
-        .use(remarkStringify)
-
-    const ast = processor.parse(markdown)
-
-    // title extract from first h1, otherwise use the filename
-    let title = '';
-
-    const h1s = ast.children.filter(node => node.type === 'heading' && node.depth === 1)
-    while (!title && h1s.length) {
-        const h1 = h1s.shift()
-        if (h1 && 'children' in h1 && h1.children?.[0]?.type === 'text') {
-            title = h1?.children?.[0].value
-            // remove h1 node in first line
-            const idx = ast.children.findIndex(node => Object.is(node, h1))
-            if (idx !== -1) ast.children.splice(idx, 1)
-        }
-    }
-    if (!title) title = path.basename(p).split('.md')[0]
-    const content = processor.stringify(ast)
-    return [title, content]
 }
 
 /**

@@ -30,6 +30,11 @@ export function write(dir, data) {
     if (!fs.existsSync(path.dirname(dir))) fs.mkdirSync(path.dirname(dir), { recursive: true });
 
     console.log('write file into:', dir);
+    if (typeof data === 'string') {
+        fs.writeFileSync(dir, data);
+        return
+    }
+
     fs.writeFileSync(dir, JSON.stringify(data, null, 2));
 }
 
@@ -45,6 +50,7 @@ export function preview(post) {
         created: post.created,
         author: post.author,
         tags: post.tags,
+        description: post.description,
         content: previewOfMarkdown(post.content),
     }
 }
@@ -84,7 +90,7 @@ export function isDirectoryEmpty(dir) {
 }
 
 /**
- * 
+ * strip root from path
  * @param {string} root 
  * @param {string} f 
  * @returns {string[]}
@@ -132,4 +138,16 @@ export function group(category, size, scope, map) {
         if (!map.get(scope)) map.set(scope, [])
         map.get(scope)?.push(group)
     }
+}
+
+/**
+ * 
+ * @param {Date|string} date 
+ */
+export function resolveDate(date) {
+    if (typeof date === 'string') {
+        date = date.replace('年', '-').replace('月', '-').replace('日', '')
+    }
+
+    return new Date(date).getTime()
 }

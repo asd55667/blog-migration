@@ -6,6 +6,7 @@ import { Archive } from "./archive.js";
 export interface IPost {
   id: string;
   title: string;
+  description: string;
   created: number;
   updated: number;
   content: string;
@@ -13,7 +14,7 @@ export interface IPost {
   tags: string[];
   related: string[];
   category: string[];
-  toc: Item;
+  toc?: Item;
 }
 
 export interface Item {
@@ -26,6 +27,7 @@ export interface IPostPreview {
   id: string;
   title: string;
   created: number;
+  description: string;
   content: string;
   author: string;
   tags: string[];

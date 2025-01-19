@@ -5,7 +5,6 @@ import crypto from 'node:crypto'
 
 import { unified } from 'unified'
 import remarkParse from 'remark-parse'
-import remarkStringify from 'remark-stringify'
 import remarkSlug from 'remark-slug'
 import { toc } from 'mdast-util-toc'
 import rehypeStringify from 'rehype-stringify'
@@ -19,8 +18,7 @@ import rehypeAutolinkHeadings from "rehype-autolink-headings"
 import { getHighlighter, loadTheme } from "@shikijs/compat"
 import rehypeRaw from 'rehype-raw'
 
-import { splitContent } from './md2mdx.js'
-import { resolveDate } from './utils.js';
+import { resolveDate, splitContent } from './utils.js';
 
 
 /**
@@ -58,7 +56,7 @@ function getPostWithoutToc(p) {
 
     /** @type {string[]} */
     const category = []
-    
+
     /** @type {string[]} */
     const related = []
 
@@ -336,19 +334,3 @@ export async function markdown2Html(markdown) {
     return /** @type {string} */ (result.value)
 }
 
-/**
- * get first paragraph of blog
- * @param {string} markdown 
- * @returns ${IPostPreview}
- */
-export function previewOfMarkdown(markdown) {
-    const processor = unified().use(remarkParse).use(remarkStringify)
-
-    const ast = processor.parse(markdown)
-
-    const idx = ast.children.findIndex(node => node.type === 'paragraph')
-
-    if (idx !== -1) ast.children = ast.children.slice(0, idx + 1)
-
-    return processor.stringify(ast)
-}

@@ -7,17 +7,13 @@ import { Archive, archive2mdx } from './src/archive.js'
 import { renderYears, renderYear, renderMonth } from './src/ui.js'
 import { MONTHS } from './src/data.js'
 
-const root = process.argv[2] || process.cwd()
-const output = process.argv[3] || process.cwd()
-
-
-migrating2mdx(root)
 
 /**
  * migrate from .md to .mdx
  * @param {string} root root path of blogs
+ * @param {string} output output path of mdx
  */
-async function migrating2mdx(root) {
+export async function migrating2mdx(root, output) {
 
     const archive = new Archive()
 
@@ -29,14 +25,15 @@ async function migrating2mdx(root) {
         }
     })
 
-    generateArchive(archive)
+    generateArchive(archive, output)
 }
 
 /**
  * 
  * @param {Archive} archive 
+ * @param {string} output output path of mdx
  */
-async function generateArchive(archive) {
+async function generateArchive(archive, output) {
     const root = path.join(output, 'archive')
 
     // archive/index.mdx

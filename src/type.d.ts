@@ -50,3 +50,10 @@ export interface IArchiveMonth {
   month: number;
   posts: IPostPreview[];
 }
+
+
+export interface IDocNav {
+  title: string;
+  href: string;
+  // items: IDocNav[]
+}

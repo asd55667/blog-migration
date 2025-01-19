@@ -8,10 +8,12 @@ import remarkStringify from 'remark-stringify'
 /**
  * @typedef {import('./type.js').IPost} IPost
  * @typedef {import('./type.js').IPostPreview} IPostPreview
+ * @typedef {import('./type.js').IArchive} IArchive
+ * @typedef {import('./type.js').IDocNav} IDocNav
  */
 
 /**
- * 
+ *
  * @param {string} root
  * @param {(p: string) => void} callback
  */
@@ -24,9 +26,9 @@ export function walk(root, callback) {
 }
 
 /**
- * 
+ *
  * @param {string} dir output path
- * @param {unknown} data 
+ * @param {unknown} data
  */
 export function write(dir, data) {
     if (!fs.existsSync(path.dirname(dir))) fs.mkdirSync(path.dirname(dir), { recursive: true });
@@ -42,7 +44,7 @@ export function write(dir, data) {
 
 /**
  * simplify post date for preview
- * @param {IPost} post 
+ * @param {IPost} post
  * @returns {IPostPreview}
  */
 export function preview(post) {
@@ -58,8 +60,8 @@ export function preview(post) {
 }
 
 /**
- * 
- * @param {string} dir 
+ *
+ * @param {string} dir
  * @returns {number}
  */
 export function sumMarkdowns(dir) {
@@ -75,7 +77,7 @@ export function sumMarkdowns(dir) {
 }
 
 /**
- * 
+ *
  * @param {string} dir
  * @returns {boolean}
  */
@@ -93,8 +95,8 @@ export function isDirectoryEmpty(dir) {
 
 /**
  * strip root from path
- * @param {string} root 
- * @param {string} f 
+ * @param {string} root
+ * @param {string} f
  * @returns {string[]}
  */
 export function getRelativePathArray(root, f) {
@@ -109,11 +111,11 @@ export function getRelativePathArray(root, f) {
 }
 
 /**
- * 
+ *
  * @template T
- * @param {T[]} array 
- * @param {T} item 
- * @param {(a:T,b:T)=>number} comparator 
+ * @param {T[]} array
+ * @param {T} item
+ * @param {(a:T,b:T)=>number} comparator
  */
 export function insert(array, item, comparator) {
     let l = 0
@@ -129,10 +131,10 @@ export function insert(array, item, comparator) {
 }
 
 /**
- * @param {{posts: (IPost|IPostPreview)[]}} category 
- * @param {number} size 
- * @param {string} scope 
- * @param {Map<string, (IPost|IPostPreview)[][]>} map 
+ * @param {{posts: (IPost|IPostPreview)[]}} category
+ * @param {number} size
+ * @param {string} scope
+ * @param {Map<string, (IPost|IPostPreview)[][]>} map
  */
 export function group(category, size, scope, map) {
     for (let i = 1; i <= Math.ceil((category.posts?.length || 0) / size); i++) {
@@ -143,20 +145,22 @@ export function group(category, size, scope, map) {
 }
 
 /**
- * 
- * @param {Date|string} date 
+ *
+ * @param {Date|string} date
+ * @returns {number}
  */
 export function resolveDate(date) {
     if (typeof date === 'string') {
         date = date.replace('年', '-').replace('月', '-').replace('日', '')
     }
 
-    return new Date(date).getTime()
+    const time = new Date(date).getTime()
+    return time ? time : new Date().getTime()
 }
 
 /**
  * if no h1 heading, use the filename
- * @param {string} markdown 
+ * @param {string} markdown
  * @param {string} p
  */
 export function splitContent(markdown, p) {
@@ -180,7 +184,7 @@ export function splitContent(markdown, p) {
             const idx = ast.children.findIndex(node => Object.is(node, h1))
 
             if (idx !== -1) {
-                // treat the first blockquote behind h1 as description 
+                // treat the first blockquote behind h1 as description
                 const blockquote = ast.children[idx + 1]
                 if (blockquote?.type === 'blockquote' && blockquote.children?.[0]?.type === 'paragraph') {
                     const paragraph = blockquote?.children?.[0]
@@ -212,10 +216,9 @@ export function splitContent(markdown, p) {
     return { title, description, date, content }
 }
 
-
 /**
  * get first paragraph of blog
- * @param {string} markdown 
+ * @param {string} markdown
  * @returns ${IPostPreview}
  */
 export function previewOfMarkdown(markdown) {
@@ -228,4 +231,29 @@ export function previewOfMarkdown(markdown) {
     if (idx !== -1) ast.children = ast.children.slice(0, idx + 1)
 
     return processor.stringify(ast)
+}
+
+/**
+ *
+ * @param {IArchive[]} archives
+ * @returns {IDocNav[]}
+ */
+export function generateDocNav(archives) {
+    // get all posts in the archives
+
+    /** @type {IDocNav[]} */
+    const initNav = []
+    return archives.reduce((acc, archive) => {
+        /** @type {IDocNav[]} */
+        const initSubNav = []
+        const subNav = archive.months.reduce((acc, month) => {
+            return acc.concat(month.posts.map(post => ({
+                title: post.title,
+                href: `/posts/${post.id}`,
+                // items: []
+            })))
+        }, initSubNav)
+        return acc.concat(subNav)
+    }, initNav)
+
 }

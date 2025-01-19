@@ -4,7 +4,7 @@
  * @typedef {import('./type.js').IPost} IPost
  */
 
-import { renderPostMeta, renderYears, renderYear, renderMonth } from './ui.js';
+import { renderPostMeta } from './ui.js';
 import { group, insert, preview } from './utils.js';
 
 export class Archive {
@@ -18,8 +18,8 @@ export class Archive {
     }
 
     /**
-     * 
-     * @param {IPost} post 
+     *
+     * @param {IPost} post
      */
     add(post) {
         const date = new Date(post.created)
@@ -60,8 +60,8 @@ export class Archive {
     }
 
     /**
-     * 
-     * @param {number} year 
+     *
+     * @param {number} year
      * @returns {IArchive=}
      */
     get(year) {
@@ -109,9 +109,9 @@ export class Archive {
 }
 
 /**
- * 
- * @param {IArchive[]} list 
- * @param {number} size 
+ *
+ * @param {IArchive[]} list
+ * @param {number} size
  */
 export function paginateArchive(list, size) {
     /**
@@ -129,10 +129,10 @@ export function paginateArchive(list, size) {
 }
 
 /**
- * 
- * @param {string} title 
- * @param {string} description 
- * @param {() => string} callback 
+ *
+ * @param {string} title
+ * @param {string} description
+ * @param {() => string} callback
  * @returns {string}
  */
 export function archive2mdx(title, description, callback) {

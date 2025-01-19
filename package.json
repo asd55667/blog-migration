@@ -14,7 +14,7 @@
   },
   "scripts": {
     "generate": "node generate blogs",
-    "mdx": "node dist/cli.js -i blogs -t mdx",
+    "mdx": "node cli.js -i blogs -t mdx",
     "test": "ava tests/**.test.js",
     "build": "rollup -c"
   },

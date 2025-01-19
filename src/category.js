@@ -1,3 +1,4 @@
+import { renderPostMeta } from './ui.js'
 import { group, sumMarkdowns, isDirectoryEmpty, getRelativePathArray } from './utils.js'
 
 /**
@@ -6,10 +7,10 @@ import { group, sumMarkdowns, isDirectoryEmpty, getRelativePathArray } from './u
  */
 
 /**
- * 
+ *
  * @param {string} root walking root
  * @param {string} dir current accessing directory
- * @param {Category} categories 
+ * @param {Category} categories
  */
 export function addCategory(root, dir, categories) {
     if (isDirectoryEmpty(dir)) return
@@ -23,9 +24,9 @@ export function addCategory(root, dir, categories) {
 }
 
 /**
- * 
- * @param {string[]} category 
- * @param {Category} categories 
+ *
+ * @param {string[]} category
+ * @param {Category} categories
  * @returns {Category} parent category of current directory
  */
 export function resolveCategory(category, categories) {
@@ -40,11 +41,11 @@ export function resolveCategory(category, categories) {
 
 export class Category {
     /**
-     * 
-     * @param {string=} title 
-     * @param {string=} key 
-     * @param {number=} total 
-     * @param {Category[]=} children 
+     *
+     * @param {string=} title
+     * @param {string=} key
+     * @param {number=} total
+     * @param {Category[]=} children
      */
     constructor(title, key, total, children) {
         this.title = title ?? ''
@@ -61,8 +62,8 @@ export class Category {
 
 
 /**
- * 
- * @param {Category} categories 
+ *
+ * @param {Category} categories
  * @param {number} size
  */
 export function paginateCategory(categories, size) {
@@ -72,8 +73,8 @@ export function paginateCategory(categories, size) {
     const map = new Map()
 
     /**
-     * 
-     * @param {Category} categories 
+     *
+     * @param {Category} categories
      * @param {number} size
      * @param {string} scope
      */
@@ -96,9 +97,9 @@ export function paginateCategory(categories, size) {
 
 /**
  * @template T
- * @param {T[]} l1 
- * @param {T[]} l2 
- * @param {(a:T,b:T)=>number} comparator 
+ * @param {T[]} l1
+ * @param {T[]} l2
+ * @param {(a:T,b:T)=>number} comparator
  */
 export function merge(l1, l2, comparator) {
     /**
@@ -128,4 +129,21 @@ export function merge(l1, l2, comparator) {
     }
 
     return l3
+}
+
+
+/**
+ *
+ * @param {string} title
+ * @param {string} description
+ * @param {() => string} callback
+ * @returns {string}
+ */
+export function categories2mdx(title, description, callback) {
+    let mdx = renderPostMeta({
+        title,
+        description
+    })
+    mdx += callback()
+    return mdx
 }

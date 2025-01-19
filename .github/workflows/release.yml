@@ -45,18 +45,3 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_ENV: "production"
-
-      - name: Get version from package.json
-        id: get_version
-        run: |
-          VERSION=$(jq -r .version < package.json)
-          echo "VERSION=v${VERSION}" >> $GITHUB_ENV
-
-      - name: Create Release
-        id: create_release
-        uses: ncipollo/release-action@v1
-        with:
-          generateReleaseNotes: true
-          tag: ${{ env.VERSION }}
-          name: Release ${{ env.VERSION }}
-          token: ${{ secrets.GITHUB_TOKEN }}

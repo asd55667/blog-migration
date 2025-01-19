@@ -20,6 +20,8 @@
     "generate": "node generate blogs",
     "mdx": "node cli.js -i blogs -t mdx",
     "test": "ava tests/**.test.js",
+    "release": "changeset version",
+    "pub:release": "pnpm build && pnpm publish --access public",
     "build": "rollup -c"
   },
   "keywords": [],

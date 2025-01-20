@@ -1,5 +1,13 @@
 # @wcw/blog-migration
 
+## 0.1.5
+
+### Patch Changes
+
+- [`a8df4b8`](https://github.com/asd55667/blog-migration/commit/a8df4b8c6aa24401f51014e49aecf8eb6125b9e5) Thanks [@asd55667](https://github.com/asd55667)! - wwworkflow
+
+- [`6cd088f`](https://github.com/asd55667/blog-migration/commit/6cd088ff235ad7f7f98338165600988737271316) Thanks [@asd55667](https://github.com/asd55667)! - workflwo
+
 ## 0.1.3
 
 ### Patch Changes

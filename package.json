@@ -15,6 +15,9 @@
     "type": "git",
     "url": "https://github.com/asd55667/blog-migration"
   },
+  "bin": {
+    "blog-migration": "dist/cli.js"
+  },
   "scripts": {
     "generate": "node generate blogs",
     "mdx": "node cli.js -i blogs -t mdx",

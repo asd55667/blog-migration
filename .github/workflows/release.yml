@@ -31,15 +31,6 @@ jobs:
       - name: Install NPM Dependencies
         run: pnpm install
 
-      - name: Create .npmrc for Authentication
-        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
-
-      - name: Build and Publish
-        id: build-pub
-        run: |
-          pnpm build
-          pnpm release
-
       - name: Create Version PR or Publish to NPM
         id: changesets
         uses: changesets/action@v1.4.9
@@ -52,6 +43,15 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_ENV: "production"
+
+      - name: Create .npmrc for Authentication
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+
+      - name: Build and Publish
+        id: build-pub
+        run: |
+          pnpm build
+          pnpm release
 
       - name: Get version from package.json
         id: get_version

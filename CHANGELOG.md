@@ -1,5 +1,11 @@
 # @wcw/blog-migration
 
+## 0.1.6
+
+### Patch Changes
+
+- [`69de867`](https://github.com/asd55667/blog-migration/commit/69de867b513e651694005992c3ae6592b5097bf0) Thanks [@asd55667](https://github.com/asd55667)! - chore: add CLI entry point for blog migration
+
 ## 0.1.5
 
 ### Patch Changes

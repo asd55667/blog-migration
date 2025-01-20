@@ -31,13 +31,14 @@ jobs:
       - name: Install NPM Dependencies
         run: pnpm install
 
+      - name: Create .npmrc for Authentication
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+
       - name: Build and Publish
         id: build-pub
         run: |
-          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> .npmrc
-          pnpm build && pnpm release
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          pnpm build
+          pnpm release
 
       - name: Create Version PR or Publish to NPM
         id: changesets

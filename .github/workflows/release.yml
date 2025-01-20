@@ -33,6 +33,11 @@ jobs:
 
       - name: Build
         run: pnpm build
+      - name: Build and Publish
+        id: build-pub
+        run: pnpm build && pnpm release
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Create Version PR or Publish to NPM
         id: changesets
@@ -46,14 +51,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_ENV: "production"
-
-      - name: NPM
-        id: npm-pub
-        run: |
-          "pnpm run release"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Get version from package.json
         id: get_version

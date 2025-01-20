@@ -23,11 +23,8 @@ jobs:
           node-version: "22.12.0"
 
       - name: Setup pnpm
-        # You may pin to the exact commit or the version.
-        # uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2
         uses: pnpm/action-setup@v4.0.0
         with:
-          # Version of pnpm to install
           version: 9.15.2 # optional
 
       - name: Install NPM Dependencies
@@ -37,7 +34,7 @@ jobs:
         id: get_old_version
         run: |
           OLD_VERSION=$(jq -r .version < package.json)
-          echo "::set-output name=OLD_VERSION::v${OLD_VERSION}"
+          echo "OLD_VERSION=${OLD_VERSION}" >> $GITHUB_OUTPUT
           echo ${OLD_VERSION}
 
       - name: Create Version PR or Publish to NPM
@@ -53,29 +50,30 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_ENV: "production"
 
-      - name: Get version from package.json
+      - name: Get new version from package.json
         id: get_version
         run: |
           VERSION=$(jq -r .version < package.json)
-          echo "::set-output name=VERSION::v${VERSION}"
+          echo "VERSION=${VERSION}" >> $GITHUB_OUTPUT
           echo ${VERSION}
+          echo ${{ env.VERSION != env.OLD_VERSION }}
 
       - name: Create .npmrc for Authentication
         run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
 
       - name: Build and Publish
-        id: build-pub
-        if: ${{ steps.get_version.outputs.VERSION }} != "${{ steps.get_old_version.outputs.OLD_VERSION }}"
+        id: build_pub
+        if: ${{ env.VERSION != env.OLD_VERSION }}
         run: |
           pnpm build
           pnpm release
 
       - name: Create Release
         id: create_release
-        if: ${{ steps.get_version.outputs.VERSION }} != "${{ steps.get_old_version.outputs.OLD_VERSION }}"
+        if: ${{ env.VERSION != env.OLD_VERSION }}
         uses: ncipollo/release-action@v1
         with:
           generateReleaseNotes: true
-          tag: ${{ steps.get_version.outputs.VERSION }}
-          name: Release ${{ steps.get_version.outputs.VERSION }}
+          tag: ${{ env.VERSION }}
+          name: Release ${{ env.VERSION }}
           token: ${{ secrets.GITHUB_TOKEN }}

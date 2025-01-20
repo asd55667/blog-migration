@@ -1,13 +1,12 @@
 {
   "name": "@wcw/blog-migration",
-  "version": "0.1.3",
+  "version": "0.1.2",
   "description": "migration for blog content",
   "main": "dist/index.js",
   "files": [
     "dist"
   ],
   "type": "module",
-  "private": "false",
   "author": {
     "name": "wcw",
     "url": "https://twitter.com/wcw82645854"
@@ -20,8 +19,7 @@
     "generate": "node generate blogs",
     "mdx": "node cli.js -i blogs -t mdx",
     "test": "ava tests/**.test.js",
-    "release": "changeset version",
-    "pub:release": "pnpm build && pnpm publish --access public",
+    "release": "pnpm publish --access public",
     "build": "rollup -c"
   },
   "keywords": [],

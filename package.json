@@ -2,7 +2,7 @@
   "name": "@wcw/blog-migration",
   "version": "0.1.2",
   "description": "migration for blog content",
-  "main": "dist/cli.js",
+  "main": "dist/index.js",
   "files": [
     "dist"
   ],

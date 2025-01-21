@@ -1,5 +1,11 @@
 # @wcw/blog-migration
 
+## 0.1.10
+
+### Patch Changes
+
+- [`98422ad`](https://github.com/asd55667/blog-migration/commit/98422add2dd179350fea27ef568359707937fc29) Thanks [@asd55667](https://github.com/asd55667)! - chore: update release workflow to build and publish in one step; add bin entry in package.json
+
 ## 0.1.9
 
 ### Patch Changes

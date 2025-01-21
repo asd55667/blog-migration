@@ -1,11 +1,14 @@
 #!/usr/bin/env node
 import path from 'node:path';
+import { createRequire } from 'node:module';
+import { fileURLToPath } from 'node:url';
 import { program } from 'commander';
 import { migrating2mdx } from './migrating2mdx.js';
 
-import { createRequire } from 'node:module';
+// Get the directory name of the current module
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const require = createRequire(import.meta.url);
-const pkg = require('./package.json')
+const pkg = require(path.join(__dirname, 'package.json'));
 
 program
     .name('blog-migration')

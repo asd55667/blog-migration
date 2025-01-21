@@ -1,5 +1,11 @@
 # @wcw/blog-migration
 
+## 0.1.11
+
+### Patch Changes
+
+- [`79065b8`](https://github.com/asd55667/blog-migration/commit/79065b8e1e132b74e5baf45baaac800be66d5050) Thanks [@asd55667](https://github.com/asd55667)! - chore: simplify release workflow by removing old version checks and consolidating build steps
+
 ## 0.1.10
 
 ### Patch Changes

@@ -50,10 +50,6 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_ENV: "production"
 
-      - name: Build
-        id: build
-        run: pnpm build
-
       - name: Get new version from package.json
         id: get_version
         run: |
@@ -65,10 +61,12 @@ jobs:
       - name: Create .npmrc for Authentication
         run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
 
-      - name: Publish
-        id: publish
+      - name: Build and Publish
+        id: build_pub
         if: ${{ env.VERSION != env.OLD_VERSION }}
-        run: pnpm release
+        run: |
+          pnpm build
+          pnpm release
 
       - name: Create Release
         id: create_release

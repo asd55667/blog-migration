@@ -1,5 +1,11 @@
 # @wcw/blog-migration
 
+## 0.1.7
+
+### Patch Changes
+
+- [`faf28d2`](https://github.com/asd55667/blog-migration/commit/faf28d22a1f6518a5d3aebb956793f0cbfdf0ab7) Thanks [@asd55667](https://github.com/asd55667)! - chore: update CLI entry point and improve module path resolution
+
 ## 0.1.6
 
 ### Patch Changes

@@ -30,12 +30,9 @@ jobs:
       - name: Install NPM Dependencies
         run: pnpm install
 
-      - name: Get old version from package.json
-        id: get_old_version
-        run: |
-          OLD_VERSION=$(jq -r .version < package.json)
-          echo "OLD_VERSION=${OLD_VERSION}" >> $GITHUB_OUTPUT
-          echo ${OLD_VERSION}
+      - name: Build
+        id: build
+        run: pnpm build
 
       - name: Create Version PR or Publish to NPM
         id: changesets
@@ -49,31 +46,3 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_ENV: "production"
-
-      - name: Get new version from package.json
-        id: get_version
-        run: |
-          VERSION=$(jq -r .version < package.json)
-          echo "VERSION=${VERSION}" >> $GITHUB_OUTPUT
-          echo ${VERSION}
-          echo ${{ env.VERSION != env.OLD_VERSION }}
-
-      - name: Create .npmrc for Authentication
-        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
-
-      - name: Build and Publish
-        id: build_pub
-        if: ${{ env.VERSION != env.OLD_VERSION }}
-        run: |
-          pnpm build
-          pnpm release
-
-      - name: Create Release
-        id: create_release
-        if: ${{ env.VERSION != env.OLD_VERSION }}
-        uses: ncipollo/release-action@v1
-        with:
-          generateReleaseNotes: true
-          tag: ${{ env.VERSION }}
-          name: Release ${{ env.VERSION }}
-          token: ${{ secrets.GITHUB_TOKEN }}

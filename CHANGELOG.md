@@ -1,5 +1,11 @@
 # @wcw/blog-migration
 
+## 0.1.9
+
+### Patch Changes
+
+- [`624afe6`](https://github.com/asd55667/blog-migration/commit/624afe64bb9816fdd1ef6f297865dc78824548f5) Thanks [@asd55667](https://github.com/asd55667)! - chore: remove CLI entry point from package.json
+
 ## 0.1.8
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @wcw/blog-migration
 
+## 0.1.12
+
+### Patch Changes
+
+- [`2f93fb3`](https://github.com/asd55667/blog-migration/commit/2f93fb39ba197d1902ebc3a42054712058a7a4cd) Thanks [@asd55667](https://github.com/asd55667)! - refactor: move cli.js to bin directory and update references
+
 ## 0.1.11
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @wcw/blog-migration
 
+## 0.1.8
+
+### Patch Changes
+
+- [`57fe51e`](https://github.com/asd55667/blog-migration/commit/57fe51e30d14c4627f0cb008d1a9b6658a63f4c7) Thanks [@asd55667](https://github.com/asd55667)! - chore: update release workflow to include build step and migrate blog content to mdx
+
 ## 0.1.7
 
 ### Patch Changes

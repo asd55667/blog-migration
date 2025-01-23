@@ -4,6 +4,7 @@ import { group, sumMarkdowns, isDirectoryEmpty, getRelativePathArray } from './u
 /**
  * @typedef {import('./content.js').IPost} IPost
  * @typedef {import('./content.js').IPostPreview} IPostPreview
+ * @typedef {import('./type.js').IDocNav} IDocNav
  */
 
 /**
@@ -146,4 +147,30 @@ export function categories2mdx(title, description, callback) {
     })
     mdx += callback()
     return mdx
+}
+
+
+/**
+ * TODO: handle nested category
+ * @param {Category[]} categories
+ * @returns {IDocNav[]}
+ */
+export function generateCategoryNav(categories) {
+    if (!categories.length) return []
+
+    /**
+     * @type {IDocNav[]}
+     */
+    const nav = categories.map(category => ({
+        title: category.title,
+        href: `/category/${category.key}`,
+    }))
+
+    return [
+        {
+            title: 'Category',
+            href: '/category',
+            items: nav
+        }
+    ]
 }

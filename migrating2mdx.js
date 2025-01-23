@@ -2,10 +2,10 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 
 import { md2mdx } from './src/md2mdx.js'
-import { generateDocNav, getRelativePathArray, insert, write } from './src/utils.js'
+import { getRelativePathArray, insert, write } from './src/utils.js'
 import { walk } from './src/utils-promises.js'
-import { Archive, archive2mdx } from './src/archive.js'
-import { addCategory, Category, resolveCategory, categories2mdx } from './src/category.js'
+import { Archive, archive2mdx, generatePostAndArchiveNav } from './src/archive.js'
+import { addCategory, Category, resolveCategory, categories2mdx, generateCategoryNav } from './src/category.js'
 import { renderYears, renderYear, renderMonth, renderCategory } from './src/ui.js'
 import { MONTHS } from './src/data.js'
 
@@ -36,8 +36,9 @@ export async function migrating2mdx(root, output) {
 
     generateArchiveMDX(archive, output)
     generateCategoryMDX(category, output)
-    const docNav = generateDocNav(archive.list)
-    write(path.join(output, 'doc-nav.json'), JSON.stringify(docNav))
+    const postsAndArchiveNav = generatePostAndArchiveNav(archive.list)
+    const categoriesNav = generateCategoryNav(category.children)
+    write(path.join(output, 'doc-nav.json'), JSON.stringify([...postsAndArchiveNav, ...categoriesNav]))
 }
 
 /**
@@ -49,18 +50,29 @@ async function generateArchiveMDX(archive, output) {
     const root = path.join(output, 'archive')
 
     // archive/index.mdx
-    const archiveIndex = archive2mdx('Archive', 'Things I have been through', () => renderYears(archive.list))
+    const archiveIndex = archive2mdx(
+        'Archive', // title
+        // description
+        'Welcome to the Archive Page of my blog! Here, you can browse through a chronological collection of all my posts since I embarked on this writing journey',
+        () => renderYears(archive.list))
     write(path.join(root, 'index.mdx'), archiveIndex)
 
     // archive/2020/index.mdx
     archive.list.forEach(year => {
-        const yearIndex = archive2mdx(`\"${year.year}\"`, `Posts of ${year.year}`, () => renderYear(year, 2))
+        const yearIndex = archive2mdx(
+            `\"${year.year}\"`, // title
+            // description
+            ` I hope you find joy in exploring these pages as much as I found in writing them. Thank you for being part of this journey with me!`,
+            () => renderYear(year, 2))
         write(path.join(root, `${year.year}/index.mdx`), yearIndex)
 
         // archive/2020/5.mdx
         year.months.forEach(month => {
             const title = `${year.year} ${MONTHS[month.month]}`
-            const monthMdx = archive2mdx(title, `Posts of ${title}`, () => renderMonth(month))
+            const monthMdx = archive2mdx(
+                title, // title
+                `Each entry is a snapshot of my life at that moment—filled with lessons learned, memories made, and the evolution of my thoughts.`, // description
+                () => renderMonth(month))
             write(path.join(root, `${year.year}`, `${month.month + 1}.mdx`), monthMdx)
         })
     })
@@ -76,7 +88,10 @@ async function generateCategoryMDX(category, output) {
     const root = path.join(output, 'category')
 
     // category/index.mdx
-    const categoriesIndex = categories2mdx('Category', 'There would be many categories', () => renderCategory(category, true))
+    const categoriesIndex = categories2mdx(
+        'Category',
+        'This is where you can navigate through the various themes and topics that make up my journey. Each category represents a unique aspect of my life, filled with stories, insights, and reflections that I hope will resonate with you.',
+        () => renderCategory(category, true))
     write(path.join(root, 'index.mdx'), categoriesIndex)
 
     generateChildren(category.children)
@@ -87,7 +102,10 @@ async function generateCategoryMDX(category, output) {
      */
     function generateChildren(children) {
         children.forEach(child => {
-            const categoryIndex = categories2mdx(child.title, `Posts of ${child.title}`, () => renderCategory(child, false, 1))
+            const categoryIndex = categories2mdx(
+                child.title,
+                `Welcome to the ${child.title} section of my blog, Here, you’ll find a collection of posts that reflect my thoughts, experiences, and insights on personal growth`,
+                () => renderCategory(child, false, 1))
             if (!child.children.length) {
                 generateChildren(child.children)
                 write(path.join(root, `${child.title}.mdx`), categoryIndex)

@@ -55,5 +55,5 @@ export interface IArchiveMonth {
 export interface IDocNav {
   title: string;
   href: string;
-  // items: IDocNav[]
+  items?: IDocNav[]
 }

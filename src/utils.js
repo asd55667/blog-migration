@@ -232,28 +232,3 @@ export function previewOfMarkdown(markdown) {
 
     return processor.stringify(ast)
 }
-
-/**
- *
- * @param {IArchive[]} archives
- * @returns {IDocNav[]}
- */
-export function generateDocNav(archives) {
-    // get all posts in the archives
-
-    /** @type {IDocNav[]} */
-    const initNav = []
-    return archives.reduce((acc, archive) => {
-        /** @type {IDocNav[]} */
-        const initSubNav = []
-        const subNav = archive.months.reduce((acc, month) => {
-            return acc.concat(month.posts.map(post => ({
-                title: post.title,
-                href: `/posts/${post.id}`,
-                // items: []
-            })))
-        }, initSubNav)
-        return acc.concat(subNav)
-    }, initNav)
-
-}

@@ -2,8 +2,10 @@
  * @typedef {import('./type.js').IArchive} IArchive
  * @typedef {import('./type.js').IPostPreview} IPostPreview
  * @typedef {import('./type.js').IPost} IPost
+ * @typedef {import('./type.js').IDocNav} IDocNav
  */
 
+import { MONTHS } from './data.js';
 import { renderPostMeta } from './ui.js';
 import { group, insert, preview } from './utils.js';
 
@@ -142,4 +144,51 @@ export function archive2mdx(title, description, callback) {
     })
     mdx += callback()
     return mdx
+}
+
+
+/**
+ *
+ * @param {IArchive[]} archives
+ * @returns {[IDocNav, IDocNav]}
+ */
+export function generatePostAndArchiveNav(archives) {
+    // get all posts in the archives
+
+    const posts = archives.reduce((acc, archive) => {
+        const subNav = archive.months.reduce((acc, month) => {
+            return acc.concat(month.posts.map(post => ({
+                title: post.title,
+                href: `/posts/${post.id}`,
+                // items: []
+            })))
+        }, /** @type {IDocNav[]} */([]))
+        return acc.concat(subNav)
+    }, /** @type {IDocNav[]} */([]))
+
+    const archive = archives.reduce((acc, archive) => {
+        return acc.concat(
+            archive.months.reduce((acc, month) => {
+                return acc.concat({
+                    title: `${MONTHS[month.month]} ${archive.year}`,
+                    href: `/archive/${archive.year}/${month.month + 1}`,
+                    // items: []
+                })
+            }, /** @type {IDocNav[]} */([]))
+        )
+    }, /** @type {IDocNav[]} */([]))
+
+
+    return [
+        {
+            title: 'Posts',
+            href: '/posts',
+            items: posts,
+        },
+        {
+            title: 'Archive',
+            href: '/archive',
+            items: archive,
+        }
+    ]
 }

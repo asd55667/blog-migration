@@ -1,5 +1,11 @@
 # @wcw/blog-migration
 
+## 0.1.13
+
+### Patch Changes
+
+- [`f3a4d20`](https://github.com/asd55667/blog-migration/commit/f3a4d20896ae3407a40d8790d414178f66ebbe94) Thanks [@asd55667](https://github.com/asd55667)! - feat: enhance navigation generation for posts and categories in MDX migration
+
 ## 0.1.12
 
 ### Patch Changes

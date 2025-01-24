@@ -4,6 +4,7 @@ import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { program } from 'commander';
 import { migrating2mdx } from '../migrating2mdx.js';
+import { generateFrom } from '../generate.js';
 
 // Get the directory name of the current module
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -19,9 +20,11 @@ program
     .requiredOption('-t, --type <type>', 'migration type (currently only "mdx" supported)')
     .action(async (options) => {
         try {
+            const outputDir = options.outputDirectory ? path.resolve(process.cwd(), options.outputDirectory) : options.type;
             if (options.type === 'mdx') {
-                const outputDir = options.outputDirectory ? path.resolve(process.cwd(), options.outputDirectory) : 'mdx';
                 migrating2mdx(options.inputDirectory, outputDir);
+            } else if (options.type === 'api') {
+                generateFrom(options.inputDirectory, outputDir);
             } else {
                 console.error(`Unsupported migration type: ${options.type}`);
                 process.exit(1);

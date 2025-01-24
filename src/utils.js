@@ -217,9 +217,9 @@ export function splitContent(markdown, p) {
 }
 
 /**
- * get first paragraph of blog
+ * get content ahead of first paragraph of markdown
  * @param {string} markdown
- * @returns ${IPostPreview}
+ * @returns {string}
  */
 export function previewOfMarkdown(markdown) {
     const processor = unified().use(remarkParse).use(remarkStringify)

@@ -4,7 +4,7 @@ import path from 'node:path'
 import { generatePost, markdown2Html } from './src/content.js'
 import { write, preview, getRelativePathArray, insert } from './src/utils.js'
 import { walk } from './src/utils-promises.js'
-import { Config } from './src/data.js'
+import { PAGE_SIZE, RECENT_COUNT } from './src/data.js'
 import { TopKQueue } from './src/topk-queue.js'
 import { addCategory, Category, paginateCategory, resolveCategory } from './src/category.js'
 import { Archive, paginateArchive } from './src/archive.js'
@@ -16,18 +16,15 @@ import { Archive, paginateArchive } from './src/archive.js'
  */
 
 
-const root = process.argv[2] || process.cwd()
-
-generateFrom(root)
-
 /**
- * 
+ *
  * @param {string} root root path of blogs
+ * @param {string} output output path
  */
-async function generateFrom(root) {
+export async function generateFrom(root, output) {
     const queue = new TopKQueue(
         /** @type {(a: IPost, b: IPost) => number} */(a, b) => b.updated - a.updated,
-        Config.RECENT_COUNT);
+        RECENT_COUNT);
 
     /**
      * @type {Context}
@@ -37,7 +34,6 @@ async function generateFrom(root) {
         root,
         categories: new Category(),
         archive: new Archive(),
-        ...Config
     }
 
     console.log('walking from: ', root)
@@ -56,38 +52,40 @@ async function generateFrom(root) {
             context.queue.enqueue(post)
 
             // const content = await markdown2Html(post.content)
-            // write(`${context.POSTS}/${post.id}`, { ...post, content })
+            // write(path.join(output, 'content/post', post.id), post)
         }
     })
 
-    setTimeout(() => serialize(context))
+    setTimeout(() => serialize(context, output))
 }
 
 /**
- * 
- * @param {Context} context 
+ *
+ * @param {Context} context
+ * @param {string} output
  */
-async function serialize(context) {
+async function serialize(context, output) {
     const recent = await Promise.all(context.queue.toArray().map(async v => {
-        const post = preview(v)
-        post.content = await markdown2Html(post.content)
-        return post
+        return preview(v)
+        // const post = preview(v)
+        // post.content = await markdown2Html(post.content)
+        // return post
     }))
-    write(context.RECENT_POSTS, recent)
+    write(path.join(output, '/content/recent-posts'), recent)
 
-    write(context.CATEGORY_LIST, context.categories)
+    write(path.join(output, '/category/list'), context.categories.withoutPosts())
 
-    serializePagination(context.CATEGORY, paginateCategory(context.categories, context.PAGE_SIZE))
+    // serializePagination(path.join(output, 'category'), paginateCategory(context.categories, PAGE_SIZE))
 
-    const archive = context.archive.list
-    write(context.ARCHIVE_LIST, context.archive.list)
-    serializePagination(context.ARCHIVE, paginateArchive(archive, context.PAGE_SIZE))
+    // const archive = context.archive.list
+    write(path.join(output, '/archive/list'), context.archive.withoutPosts())
+    // serializePagination(path.join(output, '/archive'), paginateArchive(archive, PAGE_SIZE))
 }
 
 /**
- * 
+ *
  * @param {string} dir
- * @param {Map<string, IPostPreview[][]>} map 
+ * @param {Map<string, IPostPreview[][]>} map
  */
 function serializePagination(dir, map) {
     for (const key of map.keys()) {

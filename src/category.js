@@ -59,6 +59,19 @@ export class Category {
          */
         this.posts = []
     }
+
+    /**
+     *
+     * @returns {Category}
+     */
+    withoutPosts() {
+        return new Category(
+            this.title,
+            this.key,
+            this.total,
+            this.children.map(v => v.withoutPosts())
+        )
+    }
 }
 
 

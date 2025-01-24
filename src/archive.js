@@ -96,6 +96,16 @@ export class Archive {
         }, /** @type {IPostPreview[]} */([]))
     }
 
+    withoutPosts() {
+        return this.list.map(archive => ({
+            year: archive.year,
+            months: archive.months.map(month => ({
+                month: month.month + 1,
+                total: month.posts.length
+            }))
+        }))
+    }
+
 
     // clean empty month
     get list() {

@@ -1,5 +1,11 @@
 # @wcw/blog-migration
 
+## 0.1.14
+
+### Patch Changes
+
+- [`96d36ab`](https://github.com/asd55667/blog-migration/commit/96d36abd37eca6591aa5fd48f4a58d2e019ff9c3) Thanks [@asd55667](https://github.com/asd55667)! - feat: add API migration support and enhance output handling in generate function
+
 ## 0.1.13
 
 ### Patch Changes

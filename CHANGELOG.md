@@ -1,5 +1,11 @@
 # @wcw/blog-migration
 
+## 0.1.15
+
+### Patch Changes
+
+- [`f5151a5`](https://github.com/asd55667/blog-migration/commit/f5151a5ac583376789c132616644db9f2a3a5443) Thanks [@asd55667](https://github.com/asd55667)! - feat: add total property to IArchiveMonth and improve rendering output in UI
+
 ## 0.1.14
 
 ### Patch Changes

@@ -71,10 +71,10 @@ export function renderYear(year, level = 2) {
     const h = '#'.repeat(level)
     let mdx = ''
     year.months.forEach(month => {
-        mdx += `\n${h} ${MONTHS[month.month]} (${month.posts.length})\n`
-        mdx += `<div className="p-4">\n`
+        mdx += `\n${h} ${MONTHS[month.month]} (${month.posts.length})\n\n`
+        mdx += `<div className="p-4">\n\n`
         mdx += month.posts.map(renderArchivePost).join('\n')
-        mdx += `</div>\n`
+        mdx += `</div>\n\n`
     })
     return mdx
 }
@@ -121,7 +121,7 @@ export function renderCategory(category, renderTitle, level = 2) {
     let mdx = ''
 
     if (category.total && renderTitle) mdx += `\n${h} ${category.title} (${category.total})\n`
-    if (category.posts.length && renderTitle) mdx += `<div className="p-2">\n`
+    if (category.posts.length && renderTitle) mdx += `<div className="p-2">\n\n`
     mdx += category.posts.map((post) => renderCategoryPost(post, level + 1)).join('\n')
     if (category.posts.length && renderTitle) mdx += `</div>\n`
 

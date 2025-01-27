@@ -47,6 +47,7 @@ export interface IArchive {
 
 export interface IArchiveMonth {
   month: number;
+  total: number;
   posts: IPostPreview[];
 }
 

@@ -1,5 +1,11 @@
 # @wcw/blog-migration
 
+## 0.1.16
+
+### Patch Changes
+
+- [`ccd0a60`](https://github.com/asd55667/blog-migration/commit/ccd0a600d7a2f4b8e971cc2d22517b54b09c3f11) Thanks [@asd55667](https://github.com/asd55667)! - enhance content parsing and metadata handling; support front matter conversion
+
 ## 0.1.15
 
 ### Patch Changes

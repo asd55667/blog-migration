@@ -18,7 +18,7 @@ import rehypeAutolinkHeadings from "rehype-autolink-headings"
 import { getHighlighter, loadTheme } from "@shikijs/compat"
 import rehypeRaw from 'rehype-raw'
 
-import { resolveDate, splitContent } from './utils.js';
+import { resolveDate, parseContent, getRelativePathArray } from './utils.js';
 
 
 /**
@@ -39,7 +39,7 @@ const pkg = require('../package.json')
 const algorithm = 'md5'
 
 /**
- * 
+ *
  * @param {string} p relative path of markdown file
  */
 function getPostWithoutToc(p) {
@@ -49,13 +49,13 @@ function getPostWithoutToc(p) {
     const hash = crypto.createHash(algorithm);
     const id = hash.update(markdown, 'utf-8').digest('hex')
 
-    const { title, date, description, content } = splitContent(markdown, p)
+    const { title, description, content, ...metadata } = parseContent(markdown, p)
 
     /** @type {string[]} */
-    const tags = []
+    const tags = (metadata && metadata.tags) ? metadata.tags : []
 
     /** @type {string[]} */
-    const category = []
+    const category = getRelativePathArray('', path.dirname(p))
 
     /** @type {string[]} */
     const related = []
@@ -64,10 +64,10 @@ function getPostWithoutToc(p) {
         id,
         title,
         description,
-        created: resolveDate(date),
-        updated: resolveDate(date),
+        created: resolveDate(metadata.created),
+        updated: resolveDate(metadata.modified),
         content,
-        author: pkg.author.name,
+        author: (metadata && metadata.author) ? metadata.author : pkg.author.name,
         tags,
         category,
         related,
@@ -75,7 +75,7 @@ function getPostWithoutToc(p) {
 }
 
 /**
- * 
+ *
  * @param {string} p relative path of markdown file
  * @returns {Promise<IPost>}
  */
@@ -90,7 +90,7 @@ export async function generatePost(p) {
 }
 
 /**
- * 
+ *
  * @param {string} p relative path of markdown file
  * @returns {IPost}
  */
@@ -105,17 +105,17 @@ export function generatePostSync(p) {
 }
 
 /**
- * 
- * @param {string} markdown 
+ *
+ * @param {string} markdown
  * @returns {Promise<Item>}
  */
 async function generateToc(markdown) {
     /** @type {Parent=} */
     let node;
     /**
-     * 
+     *
      * @param {Readonly<Options> | null | undefined} [options]
-     * @returns 
+     * @returns
      */
     function extractToc(options) {
         const settings = {
@@ -146,17 +146,17 @@ async function generateToc(markdown) {
 }
 
 /**
- * 
- * @param {string} markdown 
+ *
+ * @param {string} markdown
  * @returns {Item}
  */
 function generateTocSync(markdown) {
     /** @type {Parent=} */
     let node;
     /**
-     * 
+     *
      * @param {Readonly<Options> | null | undefined} [options]
-     * @returns 
+     * @returns
      */
     function extractToc(options) {
         const settings = {
@@ -191,7 +191,7 @@ function generateTocSync(markdown) {
 /**
  * @param {Node} node
  * @returns { Item }
- * 
+ *
 */
 export function ast2Toc(node) {
     if (node.type === "list") {
@@ -235,7 +235,7 @@ export function ast2Toc(node) {
 
 /**
  * TODO: customize the style of markdown
- * @param {string} markdown 
+ * @param {string} markdown
  * @returns {Promise<string>}
  */
 export async function markdown2Html(markdown) {

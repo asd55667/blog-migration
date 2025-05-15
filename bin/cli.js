@@ -3,8 +3,9 @@ import path from 'node:path';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { program } from 'commander';
-import { migrating2mdx } from '../migrating2mdx.js';
-import { generateFrom } from '../generate.js';
+import { migrating2mdx } from '../src/output/mdx.js';
+import { generateFrom } from '../src/output/api.js';
+import { migrating2fm } from '../src/output/front-matter.js';
 
 // Get the directory name of the current module
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -25,6 +26,8 @@ program
                 migrating2mdx(options.inputDirectory, outputDir);
             } else if (options.type === 'api') {
                 generateFrom(options.inputDirectory, outputDir);
+            } else if (options.type === 'fm') {
+                migrating2fm(options.inputDirectory, outputDir);
             } else {
                 console.error(`Unsupported migration type: ${options.type}`);
                 process.exit(1);

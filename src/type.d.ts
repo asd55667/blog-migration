@@ -57,3 +57,12 @@ export interface IDocNav {
   href: string;
   items?: IDocNav[]
 }
+
+export interface IMetadata {
+  title: string;
+  description: string;
+  created: string;
+  modified: string;
+  author: string;
+  tags: string[];
+}

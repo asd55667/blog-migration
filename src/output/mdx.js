@@ -1,13 +1,13 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
-import { md2mdx } from './src/conversion/md2mdx.js'
-import { getRelativePathArray, insert, write } from './src/utils.js'
-import { walk } from './src/utils-promises.js'
-import { Archive, archive2mdx, generatePostAndArchiveNav } from './src/archive.js'
-import { addCategory, Category, resolveCategory, categories2mdx, generateCategoryNav } from './src/category.js'
-import { renderYears, renderYear, renderMonth, renderCategory } from './src/ui.js'
-import { MONTHS } from './src/data.js'
+import { md2mdx } from '../conversion/md2mdx.js'
+import { getRelativePathArray, insert, write } from '../utils.js'
+import { walk } from '../utils-promises.js'
+import { Archive, archive2mdx, generatePostAndArchiveNav } from '../archive.js'
+import { addCategory, Category, resolveCategory, categories2mdx, generateCategoryNav } from '../category.js'
+import { renderYears, renderYear, renderMonth, renderCategory } from '../ui.js'
+import { MONTHS } from '../data.js'
 
 
 /**

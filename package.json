@@ -21,6 +21,7 @@
   "scripts": {
     "generate": "node bin/cli.js -i blogs -t api",
     "mdx": "node bin/cli.js -i blogs -t mdx",
+    "fm": "node bin/cli.js -i blogs -t fm",
     "test": "ava tests/**.test.js",
     "release": "pnpm publish --no-git-checks --access public",
     "build": "rollup -c"
@@ -51,6 +52,7 @@
     "remark-slug": "^7.0.1",
     "remark-stringify": "^11.0.0",
     "rollup": "^4.9.6",
+    "gray-matter": "^4.0.3",
     "shiki": "^1.1.7",
     "unified": "^11.0.4",
     "unist-util-visit": "^5.0.0"

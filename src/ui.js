@@ -27,9 +27,17 @@ export function renderPostMeta(post) {
     mdx += `---\n`
     mdx += `title: ${post.title ?? 'title'}\n`
     mdx += `description: ${post.description ?? 'description'}\n`
-    if (post.created) {
+    if (post.updated) {
         // format date to yyyy-mm-dd
-        mdx += `date: ${new Date(post.created).toISOString().split('T')[0]}\n`
+        mdx += `date: ${new Date(post.updated).toISOString().split('T')[0]}\n`
+    }
+
+    if (post.created) {
+        mdx += `created: ${new Date(post.created).toISOString().split('T')[0]}\n`
+    }
+
+    if (post.tags) {
+        mdx += `tags: ${post.tags.join(', ')}\n`
     }
     mdx += `---\n\n`
     return mdx

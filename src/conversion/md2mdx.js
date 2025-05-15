@@ -24,8 +24,8 @@ export function md2mdx(p) {
 
     const { title, description, content, ...metadata } = parseContent(markdown, p)
 
-    const postDate = metadata.created || new Date().toISOString().split('T')[0];
     const postModifyDate = metadata.modified || new Date().toISOString().split('T')[0];
+    const postDate = metadata.created || metadata.modified || new Date().toISOString().split('T')[0];
     const postAuthor = metadata.author || pkg.author.name;
     const postTags = metadata.tags || [];
 

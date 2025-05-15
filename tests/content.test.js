@@ -2,7 +2,8 @@ import test from 'ava'
 import fs from 'node:fs'
 
 import { walk } from '../src/utils.js'
-import { ast2Toc, previewOfMarkdown } from '../src/content.js'
+import { ast2Toc } from '../src/content.js'
+import { previewOfMarkdown } from '../src/utils.js'
 
 test('ast node 2 toc of shadcn', t => {
     const src = {

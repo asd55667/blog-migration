@@ -7,7 +7,30 @@ import { resolveDate, parseContent } from '../utils.js'
 import { renderPostMeta } from '../ui.js'
 
 const require = createRequire(import.meta.url)
-const pkg = require('../../package.json')
+
+/**
+ * @typedef {object} PackageJson
+ * @property {{name: string}} author
+ * @property {string} [name]
+ * @property {string} [version]
+ */
+
+/** @type {PackageJson} */
+let pkg;
+
+try {
+    // Attempt path expected for bundled output (e.g., if output is in a 'dist' folder at root)
+    pkg = require('../package.json');
+} catch (e1) {
+    try {
+        // Attempt path for source/development environment
+        pkg = require('../../package.json');
+    } catch (e2) {
+        console.error('Failed to load package.json. Please check paths. Error 1 (bundled attempt):', /** @type {Error} */ (e1).message, 'Error 2 (source attempt):', /** @type {Error} */ (e2).message);
+        // Provide a safe fallback or re-throw, depending on desired error handling
+        pkg = { author: { name: 'Default Author' } }; // Fallback to prevent crash
+    }
+}
 
 const algorithm = 'md5'
 
@@ -24,8 +47,8 @@ export function md2mdx(p) {
 
     const { title, description, content, ...metadata } = parseContent(markdown, p)
 
-    const postModifyDate = metadata.modified || new Date().toISOString().split('T')[0];
-    const postDate = metadata.created || metadata.modified || new Date().toISOString().split('T')[0];
+    const postDate = metadata.created || metadata.updated || new Date().toISOString().split('T')[0];
+    const postModifyDate = metadata.updated || new Date().toISOString().split('T')[0];
     const postAuthor = metadata.author || pkg.author.name;
     const postTags = metadata.tags || [];
 

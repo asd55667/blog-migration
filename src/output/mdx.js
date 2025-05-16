@@ -24,6 +24,10 @@ export async function migrating2mdx(root, output) {
         if ((await fs.lstat(p)).isDirectory()) {
             addCategory(root, p, category)
         } else if (path.extname(p) === '.md') {
+            if (path.basename(p) === 'README.md') {
+                return
+            }
+
             const post = md2mdx(p)
 
             const cate = resolveCategory(getRelativePathArray(root, p), category)

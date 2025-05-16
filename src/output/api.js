@@ -42,6 +42,10 @@ export async function generateFrom(root, output) {
         if ((await fs.lstat(p)).isDirectory()) {
             addCategory(context.root, p, context.categories)
         } else if (p.endsWith('.md')) {
+            if (path.basename(p) === 'README.md') {
+                return
+            }
+
             const post = await generatePost(p)
 
             const category = resolveCategory(getRelativePathArray(context.root, p), context.categories)

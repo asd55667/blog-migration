@@ -14,6 +14,10 @@ export async function migrating2fm(root, output) {
         if ((await fs.lstat(p)).isDirectory()) {
 
         } else if (path.extname(p) === '.md') {
+            if (path.basename(p) === 'README.md') {
+                return
+            }
+
             const post = md2fm(p)
             write(path.join(output, `${path.basename(p, '.md')}.md`), post)
         }

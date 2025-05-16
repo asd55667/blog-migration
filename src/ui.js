@@ -50,7 +50,7 @@ export function renderPostMeta(post) {
 export function renderArchivePost(post) {
     const date = `***${normalizeDate(post)}***`
 
-    let mdx = `> ${date} <br /> [${post.title}](posts/${post.id}) <br />\n`
+    let mdx = `> ${date} <br /> [${post.title}](/posts/${post.id}) <br />\n`
     mdx += `<span className="text-muted-foreground text-sm">${post.description}</span>\n`
     mdx += `<hr />\n`
 

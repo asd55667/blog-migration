@@ -1,5 +1,11 @@
 # @wcw/blog-migration
 
+## 0.1.17
+
+### Patch Changes
+
+- [`f1f64a2`](https://github.com/asd55667/blog-migration/commit/f1f64a256e5db3e3151672bc255a342b0da5b34c) Thanks [@asd55667](https://github.com/asd55667)! - update metadata handling; prevent processing of README
+
 ## 0.1.16
 
 ### Patch Changes

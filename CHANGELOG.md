@@ -1,5 +1,11 @@
 # @wcw/blog-migration
 
+## 0.1.18
+
+### Patch Changes
+
+- [`54c9e7d`](https://github.com/asd55667/blog-migration/commit/54c9e7df3227d31552bbd0078bde1cc843686cf2) Thanks [@asd55667](https://github.com/asd55667)! - update tags formatting in metadata to use array notation for consistency
+
 ## 0.1.17
 
 ### Patch Changes

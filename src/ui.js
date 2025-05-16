@@ -37,7 +37,7 @@ export function renderPostMeta(post) {
     }
 
     if (post.tags) {
-        mdx += `tags: ${post.tags.join(', ')}\n`
+        mdx += `tags: [${post.tags.join(', ')}]\n`
     }
     mdx += `---\n\n`
     return mdx

@@ -25,7 +25,12 @@ export function md2fm(p) {
 
     // convert metadata to front matter, delimiter is ---
     const fm = Object.entries(meta)
-        .map(([key, value]) => `${key}: ${value}`)
+        .map(([key, value]) => {
+            if (key === 'tags') {
+                return `${key}: [${Array.isArray(value) ? value.join(', ') : value}]`
+            }
+            return `${key}: ${value}`
+        })
         .join('\n')
 
     // add front matter to content

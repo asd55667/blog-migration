@@ -65,7 +65,7 @@ function getPostWithoutToc(p) {
         title,
         description,
         created: resolveDate(metadata.created || metadata.updated),
-        updated: resolveDate(metadata.updated),
+        updated: resolveDate(metadata.updated || metadata.created),
         content,
         author: (metadata && metadata.author) ? metadata.author : pkg.author.name,
         tags,

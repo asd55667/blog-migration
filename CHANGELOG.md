@@ -1,5 +1,11 @@
 # @wcw/blog-migration
 
+## 0.1.19
+
+### Patch Changes
+
+- [`8ddb0f4`](https://github.com/asd55667/blog-migration/commit/8ddb0f4f1671efaf3852f22c157ad2adb93d7b73) Thanks [@asd55667](https://github.com/asd55667)! - improve metadata handling by ensuring 'updated' date falls back to 'created' date if not present
+
 ## 0.1.18
 
 ### Patch Changes

@@ -8,6 +8,7 @@ import { PAGE_SIZE, RECENT_COUNT } from '../data.js'
 import { TopKQueue } from '../topk-queue.js'
 import { addCategory, Category, paginateCategory, resolveCategory } from '../category.js'
 import { Archive, paginateArchive } from '../archive.js'
+import { Tag } from '../tag.js'
 
 /**
  * @typedef {import('../type.js').IPost} IPost
@@ -34,6 +35,7 @@ export async function generateFrom(root, output) {
         root,
         categories: new Category(),
         archive: new Archive(),
+        tagInstance: new Tag(new Set(), new Map()),
     }
 
     console.log('walking from: ', root)
@@ -47,6 +49,10 @@ export async function generateFrom(root, output) {
             }
 
             const post = await generatePost(p)
+
+            if (post.tags) {
+                post.tags.forEach(tag => context.tagInstance.add(tag, post, post.tags.length))
+            }
 
             const category = resolveCategory(getRelativePathArray(context.root, p), context.categories)
             insert(category.posts, post, (a, b) => a.updated - b.updated)
@@ -84,6 +90,8 @@ async function serialize(context, output) {
     // const archive = context.archive.list
     write(path.join(output, '/archive/list'), context.archive.withoutPosts())
     // serializePagination(path.join(output, '/archive'), paginateArchive(archive, PAGE_SIZE))
+
+    write(path.join(output, '/tag/list'), context.tagInstance.list)
 }
 
 /**

@@ -6,9 +6,9 @@ import { getRelativePathArray, insert, write } from '../utils.js'
 import { walk } from '../utils-promises.js'
 import { Archive, archive2mdx, generatePostAndArchiveNav } from '../archive.js'
 import { addCategory, Category, resolveCategory, categories2mdx, generateCategoryNav } from '../category.js'
-import { renderYears, renderYear, renderMonth, renderCategory } from '../ui.js'
+import { tag2mdx } from '../tag.js'
+import { renderYears, renderYear, renderMonth, renderCategory, renderTagIndex, renderTagPost } from '../ui.js'
 import { MONTHS } from '../data.js'
-
 
 /**
  * migrate from .md to .mdx
@@ -19,6 +19,10 @@ export async function migrating2mdx(root, output) {
 
     const archive = new Archive()
     const category = new Category()
+    /** @type {Map<string, import('../type.js').IPost[]>} */
+    const tagMap = new Map()
+    /** @type {Set<string>} */
+    const allTags = new Set()
 
     await walk(root, async (p) => {
         if ((await fs.lstat(p)).isDirectory()) {
@@ -30,6 +34,16 @@ export async function migrating2mdx(root, output) {
 
             const post = md2mdx(p)
 
+            if (post.tags && Array.isArray(post.tags)) {
+                for (const tag of post.tags) {
+                    allTags.add(tag)
+                    if (!tagMap.has(tag)) {
+                        tagMap.set(tag, [])
+                    }
+                    tagMap.get(tag)?.push(post)
+                }
+            }
+
             const cate = resolveCategory(getRelativePathArray(root, p), category)
             insert(cate.posts, post, (a, b) => a.updated - b.updated)
 
@@ -40,9 +54,12 @@ export async function migrating2mdx(root, output) {
 
     generateArchiveMDX(archive, output)
     generateCategoryMDX(category, output)
+    generateTagMDX(archive, tagMap, output)
     const postsAndArchiveNav = generatePostAndArchiveNav(archive.list)
     const categoriesNav = generateCategoryNav(category.children)
     write(path.join(output, 'doc-nav.json'), JSON.stringify([...postsAndArchiveNav, ...categoriesNav]))
+    // console.log('All tags:', allTags);
+    // console.log('Tag map:', tagMap);
 }
 
 /**
@@ -108,7 +125,7 @@ async function generateCategoryMDX(category, output) {
         children.forEach(child => {
             const categoryIndex = categories2mdx(
                 child.title,
-                `Welcome to the ${child.title} section of my blog, Here, you’ll find a collection of posts that reflect my thoughts, experiences, and insights on personal growth`,
+                `Welcome to the ${child.title} section of my blog, Here, you'll find a collection of posts that reflect my thoughts, experiences, and insights on personal growth`,
                 () => renderCategory(child, false, 1))
             if (!child.children.length) {
                 generateChildren(child.children)
@@ -118,4 +135,24 @@ async function generateCategoryMDX(category, output) {
             }
         })
     }
+}
+
+/**
+ *
+ * @param {Archive} archive
+ * @param {Map<string, import('../type.js').IPost[]>} tagMap
+ * @param {string} output
+ */
+async function generateTagMDX(archive, tagMap, output) {
+    const root = path.join(output, 'tag')
+
+    // tag/index.mdx
+    const tagIndex = tag2mdx('Tag', 'This is Tag Page', () => renderTagIndex(archive.list))
+    write(path.join(root, 'index.mdx'), tagIndex)
+
+    // // tag/tag-name.mdx
+    // tagMap.forEach((posts, tag) => {
+    //     const tagMdx = tag2mdx(tag, '', () => renderTagPost(posts, 2))
+    //     write(path.join(root, `${tag.replace(/\s+/g, '-')}.mdx`), tagMdx)
+    // })
 }

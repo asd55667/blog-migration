@@ -138,3 +138,54 @@ export function renderCategory(category, renderTitle, level = 2) {
     })
     return mdx
 }
+
+/**
+ *
+ * @param {IArchive[]} archive
+ * @returns {string}
+ */
+export function renderTagIndex(archive) {
+    let mdx = ''
+    archive.forEach(year => {
+        year.months.forEach(month => {
+            month.posts.forEach(post => {
+                mdx += renderTagPost([post], 2)
+            })
+        })
+    })
+    return mdx
+}
+
+/**
+ *
+ * @param {(IPost|IPostPreview)[]} posts
+ * @param {number} level
+ * @returns {string}
+ */
+export function renderTagPost(posts, level = 2) {
+    const h = '#'.repeat(level)
+    let mdx = ''
+    posts.forEach(post => {
+        mdx += `${h} [${post.title}](posts/${post.id})\n`
+        mdx += `<span className="text-muted-foreground text-sm inline-flex w-full items-center justify-between gap-2">${post.description} <em className="text-xs" style={{flex: "none"}}>${normalizeDate(post)}</em></span>\n`
+        if (post.tags && Array.isArray(post.tags)) {
+            mdx += `<span className="text-muted-foreground text-sm inline-flex w-full items-center justify-between gap-2"><span className="text-primary font-medium ml-auto">${post.tags.join(', ')}</span></span>\n`
+        }
+    })
+    return mdx
+}
+
+/**
+ *
+ * @param {Set<string>} allTags
+ * @param {Map<string, IPost[]>} tagMap
+ * @returns {string}
+ */
+export function renderTag(allTags, tagMap) {
+    let mdx = ''
+    allTags.forEach(tag => {
+        mdx += `## ${tag} (${tagMap.get(tag)?.length})\n`
+        mdx += renderTagPost(tagMap.get(tag) ?? [], 3)
+    })
+    return mdx
+}

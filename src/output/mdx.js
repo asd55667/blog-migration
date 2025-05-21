@@ -6,7 +6,7 @@ import { getRelativePathArray, insert, write } from '../utils.js'
 import { walk } from '../utils-promises.js'
 import { Archive, archive2mdx, generatePostAndArchiveNav } from '../archive.js'
 import { addCategory, Category, resolveCategory, categories2mdx, generateCategoryNav } from '../category.js'
-import { tag2mdx } from '../tag.js'
+import { Tag, tag2mdx } from '../tag.js'
 import { renderYears, renderYear, renderMonth, renderCategory, renderTagIndex, renderTagPost } from '../ui.js'
 import { MONTHS } from '../data.js'
 
@@ -20,9 +20,9 @@ export async function migrating2mdx(root, output) {
     const archive = new Archive()
     const category = new Category()
     /** @type {Map<string, import('../type.js').IPost[]>} */
-    const tagMap = new Map()
-    /** @type {Set<string>} */
-    const allTags = new Set()
+
+    /** @type {Tag} */
+    const tagInstance = new Tag()
 
     await walk(root, async (p) => {
         if ((await fs.lstat(p)).isDirectory()) {
@@ -36,11 +36,7 @@ export async function migrating2mdx(root, output) {
 
             if (post.tags && Array.isArray(post.tags)) {
                 for (const tag of post.tags) {
-                    allTags.add(tag)
-                    if (!tagMap.has(tag)) {
-                        tagMap.set(tag, [])
-                    }
-                    tagMap.get(tag)?.push(post)
+                    tagInstance.add(tag, post)
                 }
             }
 
@@ -54,10 +50,11 @@ export async function migrating2mdx(root, output) {
 
     generateArchiveMDX(archive, output)
     generateCategoryMDX(category, output)
-    generateTagMDX(archive, tagMap, output)
+    generateTagMDX(archive, tagInstance, output)
     const postsAndArchiveNav = generatePostAndArchiveNav(archive.list)
     const categoriesNav = generateCategoryNav(category.children)
     write(path.join(output, 'doc-nav.json'), JSON.stringify([...postsAndArchiveNav, ...categoriesNav]))
+    write(path.join(output, 'tags.json'), JSON.stringify(Array.from(tagInstance.tags)))
     // console.log('All tags:', allTags);
     // console.log('Tag map:', tagMap);
 }
@@ -140,19 +137,26 @@ async function generateCategoryMDX(category, output) {
 /**
  *
  * @param {Archive} archive
- * @param {Map<string, import('../type.js').IPost[]>} tagMap
+ * @param {Tag} tagInstance
  * @param {string} output
  */
-async function generateTagMDX(archive, tagMap, output) {
+async function generateTagMDX(archive, tagInstance, output) {
     const root = path.join(output, 'tag')
 
     // tag/index.mdx
-    const tagIndex = tag2mdx('Tag', 'This is Tag Page', () => renderTagIndex(archive.list))
+    const tagIndex = tag2mdx('All Tags', 'This is Tag Page', () => renderTagIndex(archive.list))
     write(path.join(root, 'index.mdx'), tagIndex)
 
-    // // tag/tag-name.mdx
-    // tagMap.forEach((posts, tag) => {
-    //     const tagMdx = tag2mdx(tag, '', () => renderTagPost(posts, 2))
-    //     write(path.join(root, `${tag.replace(/\s+/g, '-')}.mdx`), tagMdx)
-    // })
+    // tag/tag-name.mdx
+    tagInstance.list.forEach(({ name }) => {
+        const tagMdx = tag2mdx(name, '', () => renderTagPost(tagInstance.get(name), 2))
+        write(path.join(root, `${name.replace(/\s+/g, '-')}.mdx`), tagMdx)
+    })
+
+    // tag/tag-combined.mdx
+    tagInstance.combined.forEach((posts, name) => {
+        const tagMdx = tag2mdx(name, '', () => renderTagPost(posts, 2))
+        write(path.join(root, `${name.replace(/\s+/g, '-')}.mdx`), tagMdx)
+    })
+
 }

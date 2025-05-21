@@ -9,18 +9,10 @@ export class Tag {
     tags;
     /** @type {Map<string, IPost[]>} */
     map;
-    /** @type {number} */
-    maximum_tags;
 
-    /**
-     *
-     * @param {Set<string>} tags
-     * @param {Map<string, IPost[]>} map
-     */
-    constructor(tags, map) {
-        this.tags = tags
-        this.map = map
-        this.maximum_tags = 0 // As per original file structure
+    constructor() {
+        this.tags = new Set()
+        this.map = new Map()
     }
 
     get list() {
@@ -32,24 +24,34 @@ export class Tag {
         })
     }
 
-    get route() {
-        const list = Array.from(this.tags)
-        return list
+    /**
+     * @returns {Map<string, import('./type.js').IPost[]>}
+     */
+    get combined() {
+        /** @type {Map<string, IPost[]>} */
+        const combined = new Map()
+
+        for (const tag of this.tags) {
+        }
+        return combined
     }
 
     /**
      *
      * @param {string} tag
      * @param {IPost} post
-     * @param {number} length
      */
-    add(tag, post, length) {
+    add(tag, post) {
         this.tags.add(tag)
         if (!this.map.has(tag)) {
             this.map.set(tag, [])
         }
-        this.map.get(tag)?.push(post)
-        this.maximum_tags = Math.max(this.maximum_tags, length)
+
+        const list = this.map.get(tag)
+        if (list?.findIndex(p => p.id === post.id) !== -1) {
+            return
+        }
+        list.push(post)
     }
 
     /**

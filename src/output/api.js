@@ -35,7 +35,8 @@ export async function generateFrom(root, output) {
         root,
         categories: new Category(),
         archive: new Archive(),
-        tagInstance: new Tag(new Set(), new Map()),
+        /** @type {Tag} */
+        tagInstance: new Tag(),
     }
 
     console.log('walking from: ', root)
@@ -51,7 +52,7 @@ export async function generateFrom(root, output) {
             const post = await generatePost(p)
 
             if (post.tags) {
-                post.tags.forEach(tag => context.tagInstance.add(tag, post, post.tags.length))
+                post.tags.forEach(tag => context.tagInstance.add(tag, post))
             }
 
             const category = resolveCategory(getRelativePathArray(context.root, p), context.categories)

@@ -1,5 +1,11 @@
 # @wcw/blog-migration
 
+## 0.1.20
+
+### Patch Changes
+
+- [`30a61b7`](https://github.com/asd55667/blog-migration/commit/30a61b739ba47c6b3f2852058965043570a3e075) Thanks [@asd55667](https://github.com/asd55667)! - enhance tag navigation
+
 ## 0.1.19
 
 ### Patch Changes

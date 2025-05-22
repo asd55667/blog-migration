@@ -1,6 +1,6 @@
 {
   "name": "@wcw2025/blog-migration",
-  "version": "0.1.19",
+  "version": "0.1.20",
   "description": "migration for blog content",
   "main": "dist/index.js",
   "files": [

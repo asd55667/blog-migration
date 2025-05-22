@@ -54,9 +54,18 @@ export async function migrating2mdx(root, output) {
     const postsAndArchiveNav = generatePostAndArchiveNav(archive.list)
     const categoriesNav = generateCategoryNav(category.children)
     write(path.join(output, 'doc-nav.json'), JSON.stringify([...postsAndArchiveNav, ...categoriesNav]))
-    write(path.join(output, 'tags.json'), JSON.stringify(Array.from(tagInstance.tags)))
+    write(path.join(output, 'all-tags.json'), JSON.stringify(Array.from(tagInstance.tags)))
+    const tagGraph = Object.fromEntries(
+        Array.from(tagInstance.graph.entries()).map(([key, value]) => [
+            key,
+            { tags: value.tags }
+        ])
+    )
+    write(path.join(output, 'tag-graph.json'), JSON.stringify(tagGraph))
+
     // console.log('All tags:', allTags);
     // console.log('Tag map:', tagMap);
+    // console.log('Tag Graph', JSON.stringify(tagGraph, null, 2));
 }
 
 /**
@@ -154,9 +163,9 @@ async function generateTagMDX(archive, tagInstance, output) {
     })
 
     // tag/tag-combined.mdx
-    tagInstance.combined.forEach((posts, name) => {
+    tagInstance.graph.forEach(({ posts }, name) => {
         const tagMdx = tag2mdx(name, '', () => renderTagPost(posts, 2))
-        write(path.join(root, `${name.replace(/\s+/g, '-')}.mdx`), tagMdx)
+        write(path.join(root, `${name}.mdx`), tagMdx)
     })
 
 }
